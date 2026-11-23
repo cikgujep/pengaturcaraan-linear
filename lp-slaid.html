@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pengaturcaraan Linear | Matematik Tambahan</title>
+<style>
+:root{--ink:#1b2a3a;--muted:#5b6b7b;--bg:#fbfcfd;--line:#d5dde5;--accent:#0072B2;--obj:#D55E00;--ok:#117733;--bad:#B3261E;--gold:#E69F00}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#dfe5ea;font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;color:var(--ink);overflow:hidden}
+#stage{width:1280px;height:720px;position:absolute;left:50%;top:50%;transform-origin:center center;background:var(--bg);box-shadow:0 6px 30px rgba(20,40,60,.25);overflow:hidden}
+#top{position:absolute;left:0;top:0;right:0;height:56px;display:flex;align-items:center;padding:0 22px;border-bottom:1px solid var(--line);background:#fff}
+#top h1{font-size:26px;margin:0;font-weight:700;letter-spacing:.2px}
+#top .num{margin-left:auto;color:var(--muted);font-size:18px}
+#prog{position:absolute;left:0;top:54px;height:3px;background:var(--accent);transition:width .25s}
+#content{position:absolute;left:0;right:0;top:56px;bottom:46px;padding:8px 16px;overflow:hidden}
+#content.gpbg{background-image:linear-gradient(#e8edf1 1px,transparent 1px),linear-gradient(90deg,#e8edf1 1px,transparent 1px);background-size:24px 24px}
+#bar{position:absolute;left:0;right:0;bottom:0;height:46px;display:flex;align-items:center;gap:10px;padding:0 16px;background:#fff;border-top:1px solid var(--line);font-size:16px}
+#bar .sp{flex:1}
+#bar .hint{color:var(--muted);font-size:14px}
+#stp{color:var(--muted);min-width:90px}
+button{font:inherit;font-size:16px;padding:6px 14px;border:1.5px solid #9fb0bf;background:#fff;color:var(--ink);border-radius:8px;cursor:pointer}
+button:hover{background:#eef3f7}
+button.pri{background:var(--accent);border-color:var(--accent);color:#fff}
+button.pri:hover{background:#005f94}
+button:disabled{opacity:.4;cursor:default}
+.split{display:flex;gap:18px;height:100%}
+.gcol{flex:none;display:flex;align-items:flex-start;justify-content:center}
+.rcol{flex:1;min-width:0;overflow:hidden;padding:4px 4px;font-size:21px;line-height:1.38}
+svg text{font-family:"Segoe UI",system-ui,Arial,sans-serif}
+svg [data-sel]{cursor:pointer}
+.stag{display:inline-block;font-size:15px;color:#fff;background:var(--accent);border-radius:12px;padding:1px 12px;margin-bottom:4px}
+h2{font-size:27px;margin:2px 0 8px;line-height:1.2}
+h3{font-size:22px;margin:10px 0 6px}
+.ask{border-left:6px solid var(--gold);background:#fff6df;padding:8px 12px;margin:8px 0;border-radius:0 8px 8px 0}
+.ask b{display:block;font-size:14px;letter-spacing:.6px;text-transform:uppercase;color:#8a5a00}
+.say{margin:8px 0}
+.eq{background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:8px 12px;margin:8px 0;font-size:23px;text-align:center}
+.ok{color:var(--ok);font-weight:700}.no{color:var(--bad);font-weight:700}
+.muted{color:var(--muted)}
+.chip{display:inline-block;background:#e6f1f8;border:1px solid #9cc4de;border-radius:6px;padding:0 8px;margin:0 2px;font-size:19px}
+.small{font-size:17px}
+table{border-collapse:collapse;width:100%;font-size:19px;background:#fff}
+th,td{border:1px solid var(--line);padding:5px 9px;text-align:left}
+th{background:#eef3f7}
+tr[data-sel]{cursor:pointer}
+tr.hi td{background:#fff3c4;font-weight:600}
+tr.sel td{outline:2.5px solid var(--ink);outline-offset:-2px}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:10px}
+.card{background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:16px 18px;min-height:190px;opacity:1;transition:opacity .3s}
+.card.off{opacity:0;visibility:hidden}
+.card .n{display:inline-block;width:38px;height:38px;border-radius:50%;background:var(--accent);color:#fff;text-align:center;line-height:38px;font-weight:700;font-size:22px;margin-right:10px}
+.card h3{display:inline;font-size:26px}
+.card p{font-size:21px;margin:10px 0 0}
+.title-slide{height:100%;display:flex;flex-direction:column;justify-content:center;padding:0 60px}
+.title-slide h1{font-size:68px;margin:0 0 6px;color:var(--accent)}
+.title-slide .sub{font-size:30px;margin:0 0 26px;color:var(--muted)}
+.title-slide ul{font-size:24px;line-height:1.6;margin:6px 0}
+.title-slide .note{margin-top:24px;color:var(--muted);font-size:17px}
+.story{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:14px 16px;font-size:23px;line-height:1.55}
+.story .ph{border-radius:5px;padding:0 3px;transition:background .2s}
+.story .ph.on{background:#ffe08a}
+.story .ph.done{background:#e3f0f7}
+.mrow{display:flex;align-items:center;gap:10px;margin:8px 0;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;font-size:26px}
+.mrow .w{color:var(--muted);font-size:17px;margin-left:auto}
+input[type=range]{width:100%;accent-color:var(--obj);height:30px}
+input[type=number]{font:inherit;font-size:22px;width:76px;padding:4px 8px;border:1.5px solid #9fb0bf;border-radius:8px}
+.row{display:flex;align-items:center;gap:12px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.mini{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:8px;text-align:center;font-size:19px;line-height:1.3}
+.mini.off{opacity:0;visibility:hidden}
+.kb{display:flex;gap:12px;align-items:center;font-size:20px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:15px;color:var(--muted);margin-top:6px}
+.legend i.sw{display:inline-block;width:22px;height:0;border-top:3px solid;vertical-align:middle;margin-right:5px}
+#menuWrap{position:absolute;inset:0;background:rgba(20,30,40,.45);display:none;z-index:50;align-items:center;justify-content:center}
+#menuWrap.open{display:flex}
+#menuPanel{background:#fff;width:84%;height:84%;border-radius:14px;box-shadow:0 10px 40px rgba(0,0,0,.3);display:flex;flex-direction:column;overflow:hidden}
+#menuHead{display:flex;align-items:center;justify-content:space-between;padding:14px 22px;border-bottom:1px solid var(--line)}
+#menuHead h2{margin:0;font-size:24px}
+#menuHead button{border:none;background:none;font-size:22px;cursor:pointer;color:var(--muted);padding:2px 8px}
+#menuHead button:hover{color:var(--ink)}
+#menuList{flex:1;overflow-y:auto;padding:10px 22px 22px}
+.menu-group h4{font-size:14px;letter-spacing:.6px;text-transform:uppercase;color:var(--accent);margin:18px 0 6px;border-bottom:2px solid var(--accent);padding-bottom:4px}
+.menu-group:first-child h4{margin-top:4px}
+.menu-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;cursor:pointer;font-size:18px}
+.menu-item:hover{background:#eef3f7}
+.menu-item.cur{background:#e6f1f8;font-weight:700}
+.menu-item .mi-n{color:var(--muted);font-size:14px;min-width:26px}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="top"><h1 id="ttl"></h1><div class="num" id="num"></div></div>
+  <div id="prog"></div>
+  <div id="content"></div>
+  <div id="bar">
+    <button id="bprev">◀ Sebelum</button>
+    <button id="bnext" class="pri">Seterusnya ▶</button>
+    <span id="stp"></span>
+    <span class="sp"></span>
+    <button id="bmenu">☰ Menu</button>
+    <button id="bmode"></button>
+    <button id="bfs">Skrin penuh</button>
+    <span class="hint">← → atau PageUp / PageDown · M = Menu</span>
+  </div>
+  <div id="menuWrap">
+    <div id="menuPanel">
+      <div id="menuHead"><h2>Menu Slaid</h2><button id="menuClose">✕</button></div>
+      <div id="menuList"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+const EPS=1e-9, SYM={'<=':'≤','>=':'≥','<':'<','>':'>'};
+const X='<i>x</i>', Y='<i>y</i>';
+const COL=['#0072B2','#AA3377','#117733','#6A5ACD'];
+const INK='#1b2a3a', OBJ='#D55E00', GOLD='#E69F00', OKC='#117733', BAD='#B3261E';
+const FEAS='#4DA6D9'; /* biru terang: warna rantau tersaur (R), ikut konvensyen modul guru */
+const $=s=>document.querySelector(s);
+
+/* ================= ENJIN MATEMATIK ================= */
+const fnum=v=>{const r=Math.round(v);if(Math.abs(v-r)<1e-9)return String(r===0?0:r);return (Math.round(v*100)/100).toFixed(2).replace(/0+$/,'').replace(/\.$/,'');};
+function frac(v){for(let d=1;d<=12;d++){const n=Math.round(v*d);if(Math.abs(v*d-n)<1e-7)return d===1?String(n):n+'/'+d;}return fnum(v);}
+const isInt=v=>Math.abs(v-Math.round(v))<1e-7;
+function okC(c,x,y,closed){
+  const v=c.a*x+c.b*y-c.c, op=closed?(c.op[0]==='<'?'<=':'>='):c.op, tol=closed?1e-7:EPS;
+  return op==='<='?v<=tol:op==='>='?v>=-tol:op==='<'?v<-tol:v>tol;
+}
+function gsub(c,x,y){
+  if(c.sub)return c.sub(x,y);
+  const t=(k,v)=>k===0?null:(k===1?String(v):(k===-1?'-'+v:k+'('+v+')'));
+  const parts=[t(c.a,x),t(c.b,y)].filter(Boolean);
+  return parts.join(' + ').replace('+ -','- ')+' = '+fnum(c.a*x+c.b*y)+' '+SYM[c.op]+' '+c.c;
+}
+function vertices(P){
+  const L=P.cons,out=[];
+  for(let i=0;i<L.length;i++)for(let j=i+1;j<L.length;j++){
+    const p=L[i],q=L[j],d=p.a*q.b-q.a*p.b;
+    if(Math.abs(d)<EPS)continue;
+    let x=(p.c*q.b-q.c*p.b)/d,y=(p.a*q.c-q.a*p.c)/d;
+    if(!L.every(c=>okC(c,x,y,true)))continue;
+    x=Math.round(x*1e9)/1e9+0;y=Math.round(y*1e9)/1e9+0;
+    if(out.some(v=>Math.abs(v.x-x)<1e-7&&Math.abs(v.y-y)<1e-7))continue;
+    out.push({x,y,pair:[i,j]});
+  }
+  if(out.length){
+    const cx=out.reduce((s,v)=>s+v.x,0)/out.length,cy=out.reduce((s,v)=>s+v.y,0)/out.length;
+    out.sort((u,v)=>Math.atan2(u.y-cy,u.x-cx)-Math.atan2(v.y-cy,v.x-cx));
+  }
+  return out;
+}
+function lattice(P){
+  const out=[];
+  for(let x=Math.ceil(P.xMin);x<=P.xMax;x++)for(let y=Math.ceil(P.yMin);y<=P.yMax;y++)
+    out.push({x,y,ok:P.cons.every(c=>okC(c,x,y,false))});
+  return out;
+}
+const pval=(P,x,y)=>P.obj.a*x+P.obj.b*y;
+function bestOf(P,items){
+  let best=null;
+  items.forEach((it,i)=>{const v=pval(P,it.x,it.y);if(best===null||(P.obj.type==='max'?v>best.v+EPS:v<best.v-EPS))best={i,v};});
+  return best;
+}
+function windowPoly(P){return [[P.xMin,P.yMin],[P.xMax,P.yMin],[P.xMax,P.yMax],[P.xMin,P.yMax]];}
+function clipPoly(poly,f){
+  const out=[];
+  for(let i=0;i<poly.length;i++){
+    const p=poly[i],q=poly[(i+1)%poly.length],fp=f(p),fq=f(q);
+    if(fp>=-EPS)out.push(p);
+    if((fp>EPS&&fq<-EPS)||(fp<-EPS&&fq>EPS)){const t=fp/(fp-fq);out.push([p[0]+t*(q[0]-p[0]),p[1]+t*(q[1]-p[1])]);}
+  }
+  return out;
+}
+const sf=c=>(c.op==='<='||c.op==='<')?-1:1;
+const keepFeas=c=>p=>sf(c)*(c.a*p[0]+c.b*p[1]-c.c);
+const keepBad=c=>p=>-sf(c)*(c.a*p[0]+c.b*p[1]-c.c);
+function regionPoly(P,idx){let poly=windowPoly(P);idx.forEach(i=>{if(poly.length)poly=clipPoly(poly,keepFeas(P.cons[i]));});return poly;}
+function lineSeg(a,b,c,P){
+  const pts=[];const add=(x,y)=>{if(x>=P.xMin-EPS&&x<=P.xMax+EPS&&y>=P.yMin-EPS&&y<=P.yMax+EPS&&!pts.some(p=>Math.abs(p[0]-x)<1e-7&&Math.abs(p[1]-y)<1e-7))pts.push([x,y]);};
+  if(Math.abs(b)>EPS){add(P.xMin,(c-a*P.xMin)/b);add(P.xMax,(c-a*P.xMax)/b);}
+  if(Math.abs(a)>EPS){add((c-b*P.yMin)/a,P.yMin);add((c-b*P.yMax)/a,P.yMax);}
+  if(pts.length<2)return null;
+  pts.sort((u,v)=>u[0]-v[0]||u[1]-v[1]);
+  return [pts[0],pts[pts.length-1]];
+}
+function objStatus(P,k){
+  const V=vertices(P).map(v=>pval(P,v.x,v.y));
+  if(!V.length)return {cls:'no',msg:'Tiada rantau tersaur.'};
+  const mx=Math.max(...V),mn=Math.min(...V);
+  if(Math.abs(k-mx)<EPS)return {cls:'ok',msg:'Garis hanya menyentuh satu bucu. Ini nilai maksimum.'};
+  if(k>mx)return {cls:'no',msg:'Garis di luar rantau. Tiada pilihan sah dengan nilai ini.'};
+  if(k<mn-EPS)return {cls:'no',msg:'Garis di luar rantau. Tiada pilihan sah dengan nilai ini.'};
+  return {cls:'ok',msg:'Garis memotong rantau. Ada pilihan sah dengan nilai ini. Gelongsor lagi.'};
+}
+
+/* ================= MASALAH ================= */
+const impY={a:0,b:1,op:'>=',c:0,implicit:true,html:`${Y} ≥ 0`,eq:`${Y} = 0`,sub:(x,y)=>`${y} ≥ 0`};
+const impX={a:1,b:0,op:'>=',c:0,implicit:true,html:`${X} ≥ 0`,eq:`${X} = 0`,sub:(x,y)=>`${x} ≥ 0`};
+const P1={xMin:0,xMax:9,yMin:0,yMax:9,integer:false,
+  cons:[
+    {a:1,b:1,op:'<=',c:8,html:`${X} + ${Y} ≤ 8`,eq:`${X} + ${Y} = 8`,col:COL[0],label:{x:5.55,y:3.1,anchor:'start'},
+     how:`Gantikan ${X} = 0 untuk mendapat ${Y} = 8. Gantikan ${Y} = 0 untuk mendapat ${X} = 8. Tandakan (0, 8) dan (8, 0).`,pts:[[8,0],[0,8]],test:[0,0]},
+    {a:1,b:0,op:'>=',c:2,html:`${X} ≥ 2`,eq:`${X} = 2`,col:COL[1],label:{x:2.12,y:5.0,anchor:'start'},sub:(x,y)=>`${x} ≥ 2`,
+     how:`Garis tegak: ${X} = 2 untuk semua nilai ${Y}. Tandakan (2, 0) dan (2, 8).`,pts:[[2,0],[2,8]],test:[0,0]},
+    {a:-1,b:1,op:'<=',c:0,html:`${Y} ≤ ${X}`,eq:`${Y} = ${X}`,col:COL[2],label:{x:6.9,y:7.7,anchor:'end'},sub:(x,y)=>`${y} ≤ ${x}`,
+     how:`Garis melalui asalan (0, 0). Cari titik kedua: ${X} = 8 memberi ${Y} = 8. Tandakan (0, 0) dan (8, 8).`,pts:[[0,0],[8,8]],test:[6,2]},
+    impY,impX],
+  obj:{a:3,b:5,type:'max',name:'P',html:`3${X} + 5${Y}`}};
+const P2={xMin:0,xMax:7,yMin:0,yMax:7,integer:true,
+  cons:[
+    {a:1,b:2,op:'<=',c:6,html:`${X} + 2${Y} ≤ 6`,eq:`${X} + 2${Y} = 6`,col:COL[0],label:{x:4.15,y:1.55,anchor:'start'}},
+    {a:2,b:1,op:'<=',c:7,html:`2${X} + ${Y} ≤ 7`,eq:`2${X} + ${Y} = 7`,col:COL[1],label:{x:0.4,y:6.85,anchor:'start'}},
+    impY,impX],
+  obj:{a:3,b:2,type:'max',name:'P',html:`3${X} + 2${Y}`}};
+const mkMini=(op,xmax)=>({xMin:0,xMax:xmax||7,yMin:0,yMax:xmax||7,cons:[{a:2,b:1,op,c:6,html:`2${X} + ${Y} ${SYM[op]} 6`,eq:`2${X} + ${Y} = 6`,col:COL[0],label:{x:3.3,y:1.5,anchor:'start'}},impY,impX],obj:{a:1,b:1,type:'max',name:'P',html:''}});
+const PA={xMin:0,xMax:6,yMin:0,yMax:6,cons:[
+  {a:1,b:1,op:'<=',c:2,html:`${X} + ${Y} ≤ 2`,eq:'',col:COL[0],label:{x:0.2,y:2.5,anchor:'start'}},
+  {a:1,b:1,op:'>=',c:5,html:`${X} + ${Y} ≥ 5`,eq:'',col:COL[1],label:{x:4.2,y:1.6,anchor:'start'}},impY,impX],obj:{a:1,b:1,type:'max',name:'P'}};
+const PB={xMin:0,xMax:6,yMin:0,yMax:6,cons:[
+  {a:1,b:1,op:'>=',c:3,html:`${X} + ${Y} ≥ 3`,eq:'',col:COL[0],label:{x:0.15,y:3.5,anchor:'start'}},
+  {a:1,b:0,op:'>=',c:1,html:`${X} ≥ 1`,eq:'',col:COL[1],label:{x:1.1,y:5.5,anchor:'start'}},impY,impX],obj:{a:2,b:3,type:'min',name:'P'}};
+const PC={xMin:0,xMax:6,yMin:0,yMax:6,cons:[
+  {a:1,b:1,op:'<=',c:5,html:`${X} + ${Y} ≤ 5`,eq:'',col:COL[0],label:{x:4.35,y:1.2,anchor:'start'}},
+  {a:1,b:0,op:'<=',c:4,html:`${X} ≤ 4`,eq:'',col:COL[1],label:{x:4.1,y:5.4,anchor:'start'}},
+  {a:0,b:1,op:'<=',c:3,html:`${Y} ≤ 3`,eq:'',col:COL[2],label:{x:0.2,y:3.35,anchor:'start'}},impY,impX],obj:{a:2,b:2,type:'max',name:'P'}};
+
+/* Soalan sebenar modul: 7.2 Soalan 1 (Program Motivasi) — Modul Matematik Tambahan @ BASIS, Bab 7 */
+const P3={xMin:0,xMax:90,yMax:90,yMin:0,integer:false,
+  cons:[
+    {a:1,b:1,op:'<=',c:80,html:`${X} + ${Y} ≤ 80`,eq:`${X} + ${Y} = 80`,col:COL[0],label:{x:46,y:37,anchor:'start'},
+     pts:[[80,0],[0,80]],test:[0,0],how:`Gantikan ${X} = 0 dan ${Y} = 0 secara berasingan untuk dapat dua titik:`},
+    {a:1,b:-3,op:'<=',c:0,html:`${X} ≤ 3${Y}`,eq:`${X} = 3${Y}`,col:COL[1],label:{x:63,y:24,anchor:'start'},
+     sub:(x,y)=>`${x} ≤ ${3*y}`,test:[10,30],pts:[[0,0],[90,30]],how:`Garis ini melalui asalan (0, 0) kerana ${X} = 3${Y} apabila kedua-duanya 0. Pilih satu titik lain: apabila ${Y} = 30, ${X} = 90 → (90, 30).`},
+    {a:2,b:1,op:'>',c:60,html:`120${X} + 60${Y} &gt; 3600`,eq:`2${X} + ${Y} = 60`,col:COL[2],label:{x:9,y:35,anchor:'start'},
+     pts:[[30,0],[0,60]],test:[0,0],how:`Gantikan ${X} = 0 dan ${Y} = 0 secara berasingan untuk dapat dua titik:`},
+    impY,impX],
+  obj:{a:120,b:60,type:'max',name:'J',html:`120${X} + 60${Y}`}};
+
+/* 7.1 Soalan 6 (bacaan puisi) dan Soalan 7 (komponen elektronik) — model + graf sahaja, tiada optimum */
+const PS6={xMin:0,xMax:8,yMax:8,yMin:0,cons:[
+  {a:1,b:0,op:'<=',c:6,html:`${X} ≤ 6`,eq:`${X} = 6`,col:COL[0],label:{x:6.15,y:7.5,anchor:'start'},test:[0,0],
+   pts:[[6,0],[6,8]],how:`${X} = 6 ialah garis tegak: tidak kira nilai ${Y}, ${X} kekal 6. Tandakan mana-mana dua titik, cth (6, 0) dan (6, 8).`},
+  {a:1,b:1,op:'>=',c:2,html:`${X} + ${Y} ≥ 2`,eq:`${X} + ${Y} = 2`,col:COL[1],label:{x:0.2,y:2.35,anchor:'start'},test:[0,0],
+   pts:[[2,0],[0,2]],how:`Gantikan ${X} = 0 dan ${Y} = 0 secara berasingan untuk dapat dua titik:`},
+  {a:1,b:-1,op:'>',c:0,html:`${X} &gt; ${Y}`,eq:`${X} = ${Y}`,col:COL[2],label:{x:6.3,y:5.3,anchor:'start'},sub:(x,y)=>`${x} &gt; ${y}`,test:[3,1],
+   pts:[[0,0],[8,8]],how:`Garis ini melalui asalan (0, 0) kerana ${X} = ${Y} apabila kedua-duanya 0. Pilih satu titik lain: apabila ${X} = 8, ${Y} = 8 → (8, 8).`},
+  impY,impX],obj:{a:1,b:1,type:'max',name:'P'}};
+const PS7={xMin:0,xMax:35,yMax:42,yMin:0,cons:[
+  {a:1,b:1,op:'>=',c:10,html:`${X} + ${Y} ≥ 10`,eq:`${X} + ${Y} = 10`,col:COL[0],label:{x:1,y:11,anchor:'start'},test:[0,0],
+   pts:[[10,0],[0,10]],how:`Gantikan ${X} = 0 dan ${Y} = 0 secara berasingan untuk dapat dua titik:`},
+  {a:1,b:-3,op:'<=',c:0,html:`${X} ≤ 3${Y}`,eq:`${X} = 3${Y}`,col:COL[1],label:{x:27,y:11,anchor:'start'},sub:(x,y)=>`${x} ≤ ${3*y}`,test:[5,2],
+   pts:[[0,0],[30,10]],how:`Garis ini melalui asalan (0, 0). Pilih satu titik lain: apabila ${Y} = 10, ${X} = 30 → (30, 10).`},
+  {a:4,b:3,op:'<=',c:120,html:`4${X} + 3${Y} ≤ 120`,eq:`4${X} + 3${Y} = 120`,col:COL[2],label:{x:19,y:5,anchor:'start'},test:[0,0],
+   pts:[[30,0],[0,40]],how:`Gantikan ${X} = 0 dan ${Y} = 0 secara berasingan untuk dapat dua titik:`},
+  impY,impX],obj:{a:1,b:1,type:'max',name:'P'}};
+
+/* 7.2 Soalan 2 (bekas plastik), 3 (arca pasu), 4 (kedai perkakasan) */
+const P4={xMin:0,xMax:140,yMax:170,yMin:0,cons:[
+  {a:1,b:1,op:'>',c:50,html:`${X} + ${Y} &gt; 50`,eq:`${X} + ${Y} = 50`,col:COL[0],label:{x:4,y:30,anchor:'start'},test:[0,0],
+   pts:[[50,0],[0,50]],how:`Gantikan ${X} = 0 dan ${Y} = 0 secara berasingan untuk dapat dua titik:`},
+  {a:3,b:2,op:'<=',c:320,html:`3${X} + 2${Y} ≤ 320`,eq:`3${X} + 2${Y} = 320`,col:COL[1],label:{x:68,y:98,anchor:'start'},test:[0,0],
+   pts:[[106.67,0],[0,160]],how:`Gantikan ${X} = 0 dan ${Y} = 0 secara berasingan untuk dapat dua titik:`},
+  {a:3,b:-2,op:'<=',c:0,html:`3${X} ≤ 2${Y}`,eq:`3${X} = 2${Y}`,col:COL[2],label:{x:86,y:62,anchor:'start'},sub:(x,y)=>`3(${x}) ≤ 2(${y})`,test:[10,30],
+   pts:[[0,0],[100,150]],how:`Garis ini melalui asalan (0, 0). Pilih satu titik lain: apabila ${X} = 100, ${Y} = 150 → (100, 150).`},
+  impY,impX],obj:{a:9,b:5,type:'max',name:'J',html:`9${X} + 5${Y}`}};
+const P5={xMin:0,xMax:90,yMax:110,yMin:0,cons:[
+  {a:2,b:1,op:'<=',c:100,html:`2${X} + ${Y} ≤ 100`,eq:`2${X} + ${Y} = 100`,col:COL[0],label:{x:4,y:94,anchor:'start'},test:[0,0],
+   pts:[[50,0],[0,100]],how:`Gantikan ${X} = 0 dan ${Y} = 0 secara berasingan untuk dapat dua titik:`},
+  {a:1,b:2,op:'>=',c:60,html:`${X} + 2${Y} ≥ 60`,eq:`${X} + 2${Y} = 60`,col:COL[1],label:{x:48,y:9,anchor:'start'},test:[0,0],
+   pts:[[60,0],[0,30]],how:`Gantikan ${X} = 0 dan ${Y} = 0 secara berasingan untuk dapat dua titik:`},
+  {a:-3,b:1,op:'<=',c:0,html:`${Y} ≤ 3${X}`,eq:`${Y} = 3${X}`,col:COL[2],label:{x:24,y:82,anchor:'start'},sub:(x,y)=>`${y} ≤ ${3*x}`,test:[10,20],
+   pts:[[0,0],[30,90]],how:`Garis ini melalui asalan (0, 0). Pilih satu titik lain: apabila ${X} = 30, ${Y} = 90 → (30, 90).`},
+  impY,impX],obj:{a:300,b:250,type:'max',name:'K',html:`300${X} + 250${Y}`}};
+const P6={xMin:0,xMax:50,yMax:90,yMin:0,cons:[
+  {a:2,b:1,op:'<=',c:90,html:`2${X} + ${Y} ≤ 90`,eq:`2${X} + ${Y} = 90`,col:COL[0],label:{x:3,y:85,anchor:'start'},test:[0,0],
+   pts:[[45,0],[0,90]],how:`Gantikan ${X} = 0 dan ${Y} = 0 secara berasingan untuk dapat dua titik:`},
+  {a:-4,b:1,op:'<=',c:0,html:`${Y} ≤ 4${X}`,eq:`${Y} = 4${X}`,col:COL[1],label:{x:11,y:52,anchor:'start'},sub:(x,y)=>`${y} ≤ ${4*x}`,test:[10,5],
+   pts:[[0,0],[20,80]],how:`Garis ini melalui asalan (0, 0). Pilih satu titik lain: apabila ${X} = 20, ${Y} = 80 → (20, 80).`},
+  {a:1,b:-2,op:'<=',c:0,html:`${Y} ≥ 0.5${X}`,eq:`${Y} = 0.5${X}`,col:COL[2],label:{x:40,y:23,anchor:'start'},sub:(x,y)=>`${y} ≥ ${fnum(0.5*x)}`,test:[10,20],
+   pts:[[0,0],[40,20]],how:`Garis ini melalui asalan (0, 0). Pilih satu titik lain: apabila ${X} = 40, ${Y} = 20 → (40, 20).`},
+  impY,impX],obj:{a:1,b:1,type:'max',name:'k',html:`${X} + ${Y}`}};
+
+/* ================= PELUKIS GRAF ================= */
+function geom(P,size){
+  const ml=50,mb=40,mt=26,mr=18;
+  const unit=Math.min((size.w-ml-mr)/(P.xMax-P.xMin),(size.h-mt-mb)/(P.yMax-P.yMin));
+  const pw=unit*(P.xMax-P.xMin),ph=unit*(P.yMax-P.yMin);
+  return {ml,mt,unit,pw,ph,W:ml+pw+mr,H:mt+ph+mb,
+    X:x=>ml+(x-P.xMin)*unit,Y:y=>mt+ph-(y-P.yMin)*unit};
+}
+function drawGraph(svg,P,st,size){
+  const g=geom(P,size),X=g.X,Y=g.Y,u=st.uid||'m';
+  const path=poly=>'M'+poly.map(p=>X(p[0]).toFixed(1)+' '+Y(p[1]).toFixed(1)).join('L')+'Z';
+  const halo='paint-order="stroke" stroke="#fff" stroke-width="5" stroke-linejoin="round"';
+  const sv=s=>String(s).replace(/<i>/g,'<tspan font-style="italic">').replace(/<\/i>/g,'</tspan>');
+  const T=(x,y,txt,o)=>{o=o||{};return `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" font-size="${o.fs||16}" fill="${o.fill||INK}" text-anchor="${o.anchor||'start'}" ${o.bold?'font-weight="700"':''} ${halo}>${sv(txt)}</text>`;};
+  let o=`<defs><clipPath id="cl${u}"><rect x="${g.ml}" y="${g.mt}" width="${g.pw}" height="${g.ph}"/></clipPath>
+    <pattern id="ht${u}" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="9" stroke="#7d8b99" stroke-width="2.2"/></pattern></defs>`;
+  o+=`<rect x="${g.ml}" y="${g.mt}" width="${g.pw}" height="${g.ph}" fill="#fff"/>`;
+  const ts=g.unit>=30?1:(g.unit>=15?2:(g.unit>=6?5:(g.unit>=3?10:20)));
+  for(let x=Math.ceil(P.xMin);x<=P.xMax;x++){
+    o+=`<line x1="${X(x)}" y1="${g.mt}" x2="${X(x)}" y2="${g.mt+g.ph}" stroke="${x%ts===0?'#c9d3dc':'#e6ebf0'}" stroke-width="1"/>`;
+    if(x%ts===0)o+=`<text x="${X(x)}" y="${g.mt+g.ph+22}" font-size="16" text-anchor="middle" fill="${INK}">${x}</text>`;
+  }
+  for(let y=Math.ceil(P.yMin);y<=P.yMax;y++){
+    o+=`<line x1="${g.ml}" y1="${Y(y)}" x2="${g.ml+g.pw}" y2="${Y(y)}" stroke="${y%ts===0?'#c9d3dc':'#e6ebf0'}" stroke-width="1"/>`;
+    if(y%ts===0)o+=`<text x="${g.ml-9}" y="${Y(y)+5}" font-size="16" text-anchor="end" fill="${INK}">${y}</text>`;
+  }
+  // lorekan
+  const shade=st.shade||[];
+  o+=`<g clip-path="url(#cl${u})">`;
+  if(shade.length){
+    if(st.mode==='required'){
+      const impl=P.cons.map((c,i)=>c.implicit?i:-1).filter(i=>i>=0);
+      const poly=regionPoly(P,impl.concat(shade));
+      if(poly.length>=3)o+=`<path d="${path(poly)}" fill="${FEAS}" fill-opacity="0.55"/>`;
+    }else{
+      shade.forEach(i=>{const poly=clipPoly(windowPoly(P),keepBad(P.cons[i]));if(poly.length>=3)o+=`<path d="${path(poly)}" fill="url(#ht${u})"/>`;});
+    }
+  }
+  if(st.feas){
+    const poly=regionPoly(P,P.cons.map((c,i)=>i));
+    if(poly.length>=3)o+=`<path d="${path(poly)}" fill="${FEAS}" fill-opacity="0.55" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/>`;
+  }
+  if(st.seg)o+=`<line x1="${X(st.seg[0][0])}" y1="${Y(st.seg[0][1])}" x2="${X(st.seg[1][0])}" y2="${Y(st.seg[1][1])}" stroke="${GOLD}" stroke-width="12" stroke-linecap="round" opacity="0.85"/>`;
+  // garis kekangan
+  P.cons.forEach((c,i)=>{
+    if(c.implicit||!st.lines||!st.lines[i])return;
+    const s=lineSeg(c.a,c.b,c.c,P);if(!s)return;
+    const dash=(c.op==='<'||c.op==='>')?'stroke-dasharray="11 8"':'';
+    o+=`<line x1="${X(s[0][0])}" y1="${Y(s[0][1])}" x2="${X(s[1][0])}" y2="${Y(s[1][1])}" stroke="${c.col}" stroke-width="3.6" ${dash}/>`;
+  });
+  // garis objektif
+  if(st.k!=null){
+    const s=lineSeg(P.obj.a,P.obj.b,st.k,P);
+    if(s)o+=`<line x1="${X(s[0][0])}" y1="${Y(s[0][1])}" x2="${X(s[1][0])}" y2="${Y(s[1][1])}" stroke="${OBJ}" stroke-width="4.5" stroke-linecap="round" ${st.kDashed?'stroke-dasharray="14 10"':''}/>`;
+  }
+  o+='</g>';
+  // paksi
+  o+=`<line x1="${g.ml}" y1="${g.mt+g.ph}" x2="${g.ml+g.pw+10}" y2="${g.mt+g.ph}" stroke="${INK}" stroke-width="2.6"/>
+      <line x1="${g.ml}" y1="${g.mt+g.ph}" x2="${g.ml}" y2="${g.mt-8}" stroke="${INK}" stroke-width="2.6"/>`;
+  o+=T(g.ml+g.pw+8,g.mt+g.ph+24,'<i>x</i>',{fs:19});
+  o+=T(g.ml,g.mt-12,'<i>y</i>',{fs:19,anchor:'middle'});
+  // label garis, titik pintasan
+  P.cons.forEach((c,i)=>{
+    if(c.implicit||!st.lines||!st.lines[i])return;
+    if(c.label)o+=T(X(c.label.x),Y(c.label.y),c.html,{fill:c.col,anchor:c.label.anchor||'start',bold:true,fs:19});
+    if(c.pts&&!st.nopts){
+      c.pts.forEach(p=>{
+        o+=`<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="6" fill="${c.col}" stroke="#fff" stroke-width="1.5"/>`;
+        const onX=p[1]===P.yMin,onY=p[0]===P.xMin;
+        const dx=onY&&!onX?12:(p[0]>P.xMax-1?-8:8),dy=onX?-12:(onY?5:-12);
+        o+=T(X(p[0])+dx,Y(p[1])+dy,`(${p[0]}, ${p[1]})`,{fill:c.col,anchor:(p[0]>P.xMax-1&&!onY)?'end':'start',fs:16});
+      });
+    }
+  });
+  // titik ujian
+  (st.testPts||[]).forEach(i=>{
+    const c=P.cons[i];if(!c.test)return;const ok=okC(c,c.test[0],c.test[1]);
+    o+=`<circle cx="${X(c.test[0])}" cy="${Y(c.test[1])}" r="8" fill="${ok?OKC:BAD}" stroke="#fff" stroke-width="2"/>`;
+    o+=T(X(c.test[0])+13,Y(c.test[1])-9,`ujian (${c.test[0]}, ${c.test[1]}) ${ok?'✓':'✗'}`,{fill:ok?OKC:BAD,bold:true,fs:16});
+  });
+  // titik integer
+  if(st.lattice){
+    lattice(P).forEach(p=>{
+      const onK=st.k!=null&&p.ok&&Math.abs(pval(P,p.x,p.y)-st.k)<EPS;
+      const sel=st.sel&&st.sel.t==='p'&&st.sel.x===p.x&&st.sel.y===p.y;
+      o+=`<circle data-sel="p:${p.x},${p.y}" cx="${X(p.x)}" cy="${Y(p.y)}" r="${Math.min(17,g.unit/2.6)}" fill="#fff" fill-opacity="0.01"/>`;
+      if(p.ok)o+=`<circle cx="${X(p.x)}" cy="${Y(p.y)}" r="${onK?9:6.5}" fill="${OKC}" stroke="${onK?OBJ:'#fff'}" stroke-width="${onK?3.5:1.5}" pointer-events="none"/>`;
+      else o+=`<circle cx="${X(p.x)}" cy="${Y(p.y)}" r="3" fill="#9aa6b2" pointer-events="none"/>`;
+      if(sel)o+=`<circle cx="${X(p.x)}" cy="${Y(p.y)}" r="13" fill="none" stroke="${INK}" stroke-width="2.8" pointer-events="none"/>`;
+    });
+  }
+  // bucu
+  if(st.verts){
+    const V=vertices(P);
+    const cx=V.reduce((s,v)=>s+v.x,0)/(V.length||1),cy=V.reduce((s,v)=>s+v.y,0)/(V.length||1);
+    V.forEach((v,i)=>{
+      const sel=st.sel&&st.sel.t==='v'&&st.sel.i===i, opt=st.optV===i;
+      if(opt)o+=`<circle cx="${X(v.x)}" cy="${Y(v.y)}" r="15" fill="${GOLD}" stroke="${INK}" stroke-width="2.2"/>`;
+      o+=`<circle data-sel="v:${i}" cx="${X(v.x)}" cy="${Y(v.y)}" r="7.5" fill="#fff" stroke="${INK}" stroke-width="3"/>`;
+      if(sel)o+=`<circle cx="${X(v.x)}" cy="${Y(v.y)}" r="14" fill="none" stroke="${INK}" stroke-width="2.8" pointer-events="none"/>`;
+      if(st.vlabels!==false){
+        let dx=v.x-cx,dy=v.y-cy;const m=Math.hypot(dx,dy)||1;dx/=m;dy/=m;
+        let lx=X(v.x)+dx*26,ly=Y(v.y)-dy*26+5,an=dx<-0.3?'end':(dx>0.3?'start':'middle');
+        if(v.y<=P.yMin+EPS){ly=Y(v.y)-16;lx=X(v.x)+(dx>=0?10:-10);an=dx>=0?'start':'end';}
+        if(v.x<=P.xMin+EPS){lx=X(v.x)+14;an='start';}
+        const lab=isInt(v.x)&&isInt(v.y)?`(${fnum(v.x)}, ${fnum(v.y)})`:`(${fnum(v.x)}, ${fnum(v.y)})`;
+        o+=T(lx,ly,lab,{anchor:an,bold:true,fs:17});
+      }
+    });
+  }
+  // titik tambahan
+  (st.pts||[]).forEach(p=>{
+    o+=`<circle cx="${X(p.x)}" cy="${Y(p.y)}" r="${p.r||9}" fill="${p.fill}" stroke="${p.stroke||INK}" stroke-width="3"/>`;
+    if(p.label)o+=T(X(p.x)+(p.dx||12),Y(p.y)+(p.dy||-12),p.label,{fill:p.lc||INK,bold:true,fs:17,anchor:p.anchor||'start'});
+  });
+  // label fungsi objektif
+  if(st.k!=null&&st.objLabel!==false){
+    const s=lineSeg(P.obj.a,P.obj.b,st.k,P);
+    if(s){const e=s[1];o+=T(X(e[0])-8,Y(e[1])+(e[1]<=P.yMin+0.3?-12:22),`${P.obj.html||''} = ${fnum(st.k)}`,{fill:OBJ,anchor:'end',bold:true,fs:19});}
+  }
+  if(st.note)o+=`<text x="${g.ml+g.pw/2}" y="${g.mt+g.ph*0.82}" font-size="22" font-weight="700" fill="${BAD}" text-anchor="middle" ${halo}>${st.note}</text>`;
+  o+=`<rect x="${g.ml}" y="${g.mt}" width="${g.pw}" height="${g.ph}" fill="none" stroke="#9fb0bf" stroke-width="1"/>`;
+  svg.setAttribute('viewBox',`0 0 ${g.W.toFixed(1)} ${g.H.toFixed(1)}`);
+  svg.setAttribute('width',g.W.toFixed(1));svg.setAttribute('height',g.H.toFixed(1));
+  svg.innerHTML=o;
+  return g;
+}
+
+/* ================= RANGKA DAN NAVIGASI ================= */
+const content=$('#content');
+let mode='required',si=0,ti=0,ST={};
+const GS={w:800,h:600};
+const ask=t=>`<div class="ask"><b>Fikir dahulu</b>${t}</div>`;
+const say=t=>`<div class="say">${t}</div>`;
+const eqn=t=>`<div class="eq">${t}</div>`;
+const stag=(i,n,t)=>`<div class="stag">Langkah ${i}/${n}</div><h2>${t}</h2>`;
+const vtxText=v=>isInt(v.x)&&isInt(v.y)?`(${fnum(v.x)}, ${fnum(v.y)})`:`(${frac(v.x)}, ${frac(v.y)})`;
+const objVal=(P,x,y)=>fnum(pval(P,x,y));
+function legend(){return `<div class="legend"><span><i class="sw" style="border-color:#1b2a3a"></i>garis padu: titik pada garis sah</span><span><i class="sw" style="border-top-style:dashed;border-color:#1b2a3a"></i>putus-putus: tidak sah</span><span><i class="sw" style="border-color:${OBJ};border-top-width:5px"></i>fungsi objektif</span></div>`;}
+
+function graphFrame(P,rp,mk,size){
+  content.className='gpbg';
+  content.innerHTML=`<div class="split"><div class="gcol"><svg id="g" xmlns="http://www.w3.org/2000/svg"></svg></div><div class="rcol">${rp}</div></div>`;
+  const svg=$('#g');
+  const redraw=()=>{
+    const st=mk();st.mode=mode;st.uid='m';
+    svg.onclick=e=>{const t=e.target.closest('[data-sel]');if(t&&st.onSel)st.onSel(t.dataset.sel);};
+    return drawGraph(svg,P,st,size||GS);
+  };
+  redraw();
+  return redraw;
+}
+function plainFrame(html){content.className='';content.innerHTML=html;}
+function divider(tag,title,sub){
+  slides.push({title,steps:1,isDivider:true,draw(){
+    plainFrame(`<div style="height:100%;display:flex;flex-direction:column;justify-content:center;padding:0 60px">
+      <span class="stag" style="background:${OKC};width:fit-content;font-size:17px">${tag}</span>
+      <h1 style="font-size:50px;margin:12px 0 8px;color:${INK}">${title}</h1>
+      <p style="font-size:24px;color:var(--muted);max-width:900px">${sub}</p></div>`);
+  }});
+}
+/* Baris soalan: setiap part = {label, sentence, trigger, symbol, ans}. `trigger` mesti muncul
+   sebagai sub-rentetan tepat dalam `sentence` supaya frasa pencetus boleh ditonjolkan. */
+function modelRows(parts,t){
+  return parts.map((p,i)=>{
+    const state=i<t?'done':(i===t?'active':'pending');
+    const lbl=p.label?`<b>${p.label}</b>&nbsp; `:'';
+    if(state==='pending')return `<div style="font-size:19px;opacity:.4;padding:5px 0">${lbl}${p.sentence}</div>`;
+    const markCol=state==='active'?'#ffe08a':'#dcecf8';
+    const marked=p.sentence.split(p.trigger).join(`<mark style="background:${markCol};padding:0 4px;border-radius:4px;font-weight:700">${p.trigger}</mark>`);
+    if(state==='active')return `<div class="ask">${lbl}${marked}<br><b>Fikir:</b> frasa ini bermaksud simbol apa (rujuk jadual), dan pemboleh ubah mana yang terlibat?</div>`;
+    return `<div class="mrow" style="align-items:flex-start;flex-direction:column;gap:2px"><span style="font-size:18px">${lbl}${marked}</span><span><span class="chip">${p.trigger}</span> → <b style="font-size:21px">${p.symbol}</b> &nbsp;⟹&nbsp; <b style="color:${OKC};font-size:21px">${p.ans}</b></span></div>`;
+  }).join('');
+}
+function modelSlide(tag,titleTxt,context,parts){
+  slides.push({title:titleTxt,steps:parts.length+1,draw(t){
+    const final=t===parts.length?say(`<b>Model lengkap</b> (selain ${X} ≥ 0, ${Y} ≥ 0).`):'';
+    plainFrame(`<div style="padding:8px 28px;font-size:22px;line-height:1.42"><span class="stag" style="background:${OKC}">${tag}</span>
+      <div class="story" style="margin-top:8px">${context}</div>
+      <div style="margin-top:8px">${modelRows(parts,t)}</div>${final}</div>`);
+  }});
+}
+function ptsTable(pts,upto){
+  if(!pts||!pts.length)return'';
+  const show=upto==null?pts:pts.slice(0,upto);
+  if(show.length<1)return'';
+  return `<table style="margin-top:10px;font-size:22px">
+    <tr><th>${X}</th>${show.map(p=>`<td style="text-align:center">${fnum(p[0])}</td>`).join('')}</tr>
+    <tr><th>${Y}</th>${show.map(p=>`<td style="text-align:center">${fnum(p[1])}</td>`).join('')}</tr></table>`;
+}
+function mkPt(x,y,col){return{x,y,fill:col,stroke:'#fff',r:8,label:`(${fnum(x)}, ${fnum(y)})`,lc:col};}
+function graphStepInfo(P){
+  const real=P.cons.map((c,i)=>i).filter(i=>!P.cons[i].implicit);
+  const kind=real.map(idx=>{const c=P.cons[idx];return (c.a===0||c.b===0)?'simple':(c.c===0?'origin':'standard');});
+  const nPhases=kind.map(k=>k==='simple'?4:(k==='origin'?6:7));
+  const revealLineLocal=kind.map(k=>k==='simple'?1:(k==='origin'?3:4));
+  const revealShadeLocal=kind.map(k=>k==='simple'?3:(k==='origin'?5:6));
+  const offsets=[];let acc=0;nPhases.forEach(n=>{offsets.push(acc);acc+=n;});
+  return {real,gm:real.length,gSteps:acc+1,kind,nPhases,offsets,revealLineLocal,revealShadeLocal};
+}
+function renderGraphStep(P,tag,gt,size){
+  const {real,gSteps,kind,offsets,revealLineLocal,revealShadeLocal}=graphStepInfo(P);
+  let ci=0;for(let k=0;k<real.length;k++)if(gt>=offsets[k])ci=k;
+  const lines=[],shade=[];
+  real.forEach((idx,k)=>{
+    if(gt>=offsets[k]+revealLineLocal[k])lines[idx]=1;
+    if(gt>=offsets[k]+revealShadeLocal[k])shade.push(idx);
+  });
+  if(gt<gSteps-1){
+    const idx=real[ci],c=P.cons[idx],k=kind[ci],local=gt-offsets[ci];
+    let body,testPts=[],ptMarks=[],useAsk=false,stepLbl;
+    // roles by kind: simple=[line?,line!,shade?,shade!]  origin=[pts?,pts!,line?,line!,shade?,shade!]  standard=[pts?,pt1!,pt2!,line?,line!,shade?,shade!]
+    const role=k==='simple'?['askLine','revealLine','askShade','revealShade'][local]
+      :k==='origin'?['askPts','revealPts','askLine','revealLine','askShade','revealShade'][local]
+      :['askPts','revealPt1','revealPt2','askLine','revealLine','askShade','revealShade'][local];
+    if(role==='askPts'){
+      useAsk=true;
+      stepLbl=`Garis ${ci+1}: cari titik`;
+      body=`Kekangan: <span style="font-weight:700">${c.html}</span> → garis <span style="font-weight:700">${c.eq}</span>. Macam mana nak cari titik untuk lukis garis ini? (Petunjuk: pilih ${X} = 0 atau ${Y} = 0 untuk gantikan.)`;
+    }else if(role==='revealPts'){
+      stepLbl=`Garis ${ci+1}: titik dijumpai`;
+      body=(c.how||'')+ptsTable(c.pts);
+      ptMarks=(c.pts||[]).map(p=>mkPt(p[0],p[1],c.col));
+    }else if(role==='revealPt1'){
+      const y1=fnum(c.c/c.b);
+      stepLbl=`Garis ${ci+1}: gantikan ${X.replace(/<\/?i>/g,'')} = 0`;
+      body=`Pilih <span style="font-weight:700">${X} = 0</span> dahulu (senang kira). Gantikan ke ${c.eq}: ${c.b!==1?c.b+'':''}${Y} = ${c.c} → ${Y} = ${y1}.`+ptsTable([[0,c.c/c.b]]);
+      ptMarks=[mkPt(0,c.c/c.b,c.col)];
+    }else if(role==='revealPt2'){
+      const x2=fnum(c.c/c.a),y1=c.c/c.b;
+      stepLbl=`Garis ${ci+1}: gantikan ${Y.replace(/<\/?i>/g,'')} = 0`;
+      body=`Sekarang pilih <span style="font-weight:700">${Y} = 0</span>. Gantikan ke ${c.eq}: ${c.a!==1?c.a+'':''}${X} = ${c.c} → ${X} = ${x2}. Dua titik sudah cukup untuk lukis garis lurus.`+ptsTable([[0,y1],[c.c/c.a,0]]);
+      ptMarks=[mkPt(0,y1,c.col),mkPt(c.c/c.a,0,c.col)];
+    }else if(role==='askLine'){
+      useAsk=true;
+      stepLbl=`Garis ${ci+1}: padu atau putus-putus?`;
+      body=`Kekangan: <span style="font-weight:700">${c.html}</span>. Tanda ${SYM[c.op]} — garis ini patut <span style="font-weight:700">padu</span> atau <span style="font-weight:700">putus-putus</span>? Kenapa?`;
+      if(k!=='simple')ptMarks=(c.pts||[]).map(p=>mkPt(p[0],p[1],c.col));
+    }else if(role==='revealLine'){
+      const kd=(c.op==='<'||c.op==='>')?'putus-putus':'padu';
+      stepLbl=`Garis ${ci+1}: ${c.eq}`;
+      body=`Tanda ${SYM[c.op]} → garis <b>${kd}</b>.`;
+    }else if(role==='askShade'){
+      useAsk=true;
+      stepLbl=`Titik ujian (garis ${ci+1})`;
+      body=`Uji titik (${c.test[0]}, ${c.test[1]}) pada <span style="font-weight:700">${c.html}</span>. Benar atau salah? Sisi mana yang patut dilorek?`;
+    }else{
+      testPts=[idx];
+      const ok=okC(c,c.test[0],c.test[1]);
+      const reqMode=mode==='required';
+      const msgs=reqMode
+        ?{t:'Titik ujian sah — lorek sisi yang mengandungi titik ujian (sisi dikehendaki).',f:'Titik ujian tidak sah — lorek sisi bertentangan (sisi dikehendaki).'}
+        :{t:'Titik ujian sah — lorek sisi bertentangan (sisi tidak dikehendaki).',f:'Titik ujian tidak sah — lorek sisi titik ujian (sisi tidak dikehendaki).'};
+      stepLbl=`Lorek (garis ${ci+1})`;
+      body=`Uji (${c.test[0]}, ${c.test[1]}): ${gsub(c,c.test[0],c.test[1])} <span class="${ok?'ok':'no'}">${ok?'✓':'✗'}</span><br>${ok?msgs.t:msgs.f}`;
+    }
+    const rp=`<span class="stag" style="background:${OKC}">${tag}</span>${stag(gt+1,gSteps,stepLbl)}${useAsk?ask(body):say(body)}${gt===0?legend():''}`;
+    graphFrame(P,rp,()=>({lines,shade,testPts,pts:ptMarks}),size);
+    return;
+  }
+  const V=vertices(P);
+  const finalMsg=mode==='required'?'Sisi dikehendaki bagi setiap kekangan bertindih membentuk':'Semua sisi tidak dikehendaki ditolak (kelabu). Rantau yang tinggal ialah';
+  const rp=`<span class="stag" style="background:${OKC}">${tag}</span>${stag(gSteps,gSteps,'Rantau tersaur, R')}${say(`${finalMsg} <b>rantau tersaur, R</b> (biru).${V.length?` Bucu: ${V.map(vtxText).join(', ')}.`:''}`)}`;
+  graphFrame(P,rp,()=>({lines,shade,feas:true,verts:true,nopts:true}),size);
+}
+function modelGraphSlide(tag,titleTxt,context,parts,P){
+  const n=parts.length;
+  const {gSteps}=graphStepInfo(P);
+  slides.push({title:titleTxt,steps:n+1+gSteps,draw(t){
+    if(t<=n){
+      const final=t===n?say(`<b>Model lengkap</b> (selain ${X} ≥ 0, ${Y} ≥ 0). Seterusnya: wakilkan secara grafik, satu kekangan pada satu masa.`):'';
+      plainFrame(`<div style="padding:8px 28px;font-size:22px;line-height:1.42"><span class="stag" style="background:${OKC}">${tag}</span>
+        <div class="story" style="margin-top:8px">${context}</div>
+        <div style="margin-top:8px">${modelRows(parts,t)}</div>${final}</div>`);
+      return;
+    }
+    renderGraphStep(P,tag,t-(n+1),{w:880,h:600});
+  }});
+}
+
+const slides=[];
+
+/* ---- 0. Tajuk ---- */
+slides.push({title:'Pengaturcaraan Linear',steps:1,draw(){
+  plainFrame(`<div class="title-slide"><h1>Pengaturcaraan Linear</h1><p class="sub">Matematik Tambahan</p>
+  <p style="font-size:19px;color:var(--muted);margin:-14px 0 20px">Panitia Matematik Tambahan, SM Sains Banting</p>
+  <h3>Hasil pembelajaran</h3>
+  <ul><li>Membina model: pemboleh ubah keputusan, kekangan dan fungsi objektif</li>
+  <li>Melukis rantau tersaur, R, dengan tepat</li>
+  <li>Mencari nilai optimum, termasuk apabila ${X} dan ${Y} mesti integer</li></ul></div>`);
+}});
+
+/* ---- 7.1 Model Pengaturcaraan Linear (ikut modul, Soalan 1-7) ---- */
+divider('Bahagian 1 · Modul 7.1','7.1 Model Pengaturcaraan Linear','Soalan 1 hingga 7 daripada Modul Matematik Tambahan @ BASIS. Bahagian A (Soalan 1-5): bentuk model sahaja. Bahagian B (Soalan 6-7): bentuk model dan wakilkan secara grafik.');
+
+slides.push({title:'Modul 7.1: Langkah bina model & nota penting',steps:6,draw(t){
+  const cite=`<span class="stag" style="background:${OKC}">Modul 7.1</span>`;
+  if(t===0){
+    plainFrame(`<div style="padding:10px 32px">${cite}
+    <div class="cards" style="grid-template-columns:1fr 1fr 1fr;margin-top:14px;gap:22px">
+      <div class="card" style="min-height:210px;padding:18px 20px"><span class="n" style="width:42px;height:42px;line-height:42px;font-size:24px">1</span> <span style="font-size:34px;vertical-align:middle">📋</span><h3 style="font-size:25px;margin-top:10px">Pemboleh ubah keputusan</h3><p style="font-size:20px;line-height:1.4">Keputusan yang perlu dibuat, kebiasaannya diwakili ${X} dan ${Y}.</p></div>
+      <div class="card" style="min-height:210px;padding:18px 20px"><span class="n" style="width:42px;height:42px;line-height:42px;font-size:24px">2</span> <span style="font-size:34px;vertical-align:middle">🎯</span><h3 style="font-size:25px;margin-top:10px">Fungsi objektif</h3><p style="font-size:20px;line-height:1.4">Fungsi yang hendak <b>dimaksimumkan</b> atau <b>diminimumkan</b>.</p></div>
+      <div class="card" style="min-height:210px;padding:18px 20px"><span class="n" style="width:42px;height:42px;line-height:42px;font-size:24px">3</span> <span style="font-size:34px;vertical-align:middle">📝</span><h3 style="font-size:25px;margin-top:10px">Kekangan</h3><p style="font-size:20px;line-height:1.4">Wakilkan sebagai persamaan/ketaksamaan linear, dalam sebutan ${X} dan ${Y}.</p></div>
+    </div>
+    <div class="ask" style="margin-top:22px;display:flex;align-items:center;gap:32px;padding:18px 24px">
+      <div style="flex:1;font-size:22px"><b style="display:block;font-size:16px;letter-spacing:.6px;text-transform:uppercase;color:#8a5a00;margin-bottom:8px">Info Tambahan (Modul)</b>Tanda ≥ atau ≤ → garis <span style="font-weight:700">padu</span> (solid). Tanda &lt; atau &gt; → garis <span style="font-weight:700">sempadan putus-putus</span> (dashed).</div>
+      <div style="display:flex;gap:26px;flex:none">
+        <div style="text-align:center"><svg viewBox="0 0 220 60" width="220" height="60"><line x1="12" y1="34" x2="208" y2="34" stroke="${INK}" stroke-width="6"/><circle cx="12" cy="34" r="8" fill="${INK}"/></svg><div style="font-size:17px;font-weight:700;margin-top:4px">≥ / ≤ → PADU</div></div>
+        <div style="text-align:center"><svg viewBox="0 0 220 60" width="220" height="60"><line x1="12" y1="34" x2="208" y2="34" stroke="${INK}" stroke-width="6" stroke-dasharray="14 10"/><circle cx="12" cy="34" r="8" fill="#fff" stroke="${INK}" stroke-width="4"/></svg><div style="font-size:17px;font-weight:700;margin-top:4px">&lt; / &gt; → PUTUS-PUTUS</div></div>
+      </div></div></div>`);
+    return;
+  }
+  const rows=[['≥','sekurang-kurangnya, tidak kurang daripada'],['≤','tidak melebihi, paling banyak, selebih-lebihnya'],['&gt;','lebih daripada, melebihi'],['&lt;','kurang daripada'],['=','tepat, sama dengan']];
+  const i=t-1;
+  const body=rows.map((r,j)=>j<i?`<tr class="hi"><td style="font-size:26px;text-align:center">${r[0]}</td><td>${r[1]}</td></tr>`:'').filter(Boolean).join('');
+  plainFrame(`<div style="padding:6px 28px">${cite}<h2>Bila nak guna &gt;, &lt;, ≥, ≤ dan =?</h2>
+    ${i<rows.length?ask(`Simbol <span style="font-size:24px;font-weight:700">${rows[i][0]}</span> digunakan apabila ayat cakap apa?`):say('<b>Jadual lengkap.</b> Guna ini setiap kali tukar ayat kepada ketaksamaan.')}
+    <table style="margin-top:10px"><tr><th>Simbol</th><th>Digunakan apabila ...</th></tr>${i<rows.length?body+`<tr style="background:#fff6df"><td style="font-size:26px;text-align:center">${rows[i][0]}</td><td><i>(bincang dahulu)</i></td></tr>`:rows.map(r=>`<tr class="hi"><td style="font-size:26px;text-align:center">${r[0]}</td><td>${r[1]}</td></tr>`).join('')}</table></div>`);
+}});
+
+/* ---- 2. Cerita ke model ---- */
+slides.push({title:'Latihan: Daripada cerita kepada model',steps:7,draw(t){
+  const ph=(n,txt)=>`<span class="ph ${t===n?'on':(t>n?'done':'')}">${txt}</span>`;
+  const story=`Sebuah kedai membuat ${X} biji kek dan ${Y} biji pai dalam sehari. ${ph(1,'Jumlah kek dan pai <b>tidak melebihi</b> 8 biji.')} ${ph(2,'Bilangan kek <b>sekurang-kurangnya</b> 2.')} ${ph(3,'Bilangan pai <b>tidak melebihi</b> bilangan kek.')} Keuntungan ialah RM3 sebuah kek dan RM5 sebuah pai. ${ph(5,'Cari keuntungan maksimum.')}`;
+  const rows=[];
+  if(t>=1)rows.push(`<div class="mrow"><span>Biar ${X} = bilangan kek,<br>${Y} = bilangan pai</span><span class="w">pemboleh ubah</span></div>`);
+  if(t>=2)rows.push(`<div class="mrow"><span>${X} + ${Y} ≤ 8</span><span class="w"><span class="chip">tidak melebihi</span> ≤</span></div>`);
+  if(t>=3)rows.push(`<div class="mrow"><span>${X} ≥ 2</span><span class="w"><span class="chip">sekurang-kurangnya</span> ≥</span></div>`);
+  if(t>=4)rows.push(`<div class="mrow"><span>${Y} ≤ ${X}</span><span class="w">pai tidak melebihi kek</span></div>`);
+  if(t>=5)rows.push(`<div class="mrow"><span>${X} ≥ 2, ${Y} ≥ 0</span><span class="w">bilangan tidak negatif (${X} sudah ≥ 2 daripada ayat kedua)</span></div>`);
+  if(t>=6)rows.push(`<div class="mrow" style="border-color:${OBJ}"><span>Maksimumkan <i>P</i> = 3${X} + 5${Y}</span><span class="w">fungsi objektif</span></div>`);
+  const asks=['Apakah yang boleh dipilih oleh kedai ini?',`Ayat pertama: jumlah tidak melebihi 8. Tulis ketaksamaan sebelum klik seterusnya.`,`Ayat kedua: sekurang-kurangnya 2. Tulis ketaksamaan.`,`Pai tidak melebihi kek. Tulis dalam ${X} dan ${Y}.`,'Adakah bilangan kek atau pai boleh negatif?','Apakah yang hendak dimaksimumkan, dan bagaimana ia dikira?',''];
+  plainFrame(`<div class="split"><div style="flex:1.05"><div class="story">${story}</div>${asks[t]?ask(asks[t]):''}</div><div style="flex:.95;padding-top:4px">${rows.join('')}${t>=6?say('<b>Model lengkap.</b> Graf ialah alat untuk menjawabnya.'):''}</div></div>`);
+}});
+
+/* ---- Soalan 7.1 ---- */
+modelSlide('Modul 7.1 · Soalan 1','Soalan 1: Pengeluaran kereta',
+  `Sebuah syarikat pengeluar kereta menghasilkan dua jenis kereta, kereta M dan kereta N. Pada hari tertentu, syarikat tersebut menghasilkan ${X} unit kereta M dan ${Y} unit kereta N.`,
+  [{label:'(a)',sentence:'Bilangan unit kereta N yang dihasilkan adalah tidak lebih daripada tiga kali bilangan unit kereta M.',trigger:'tidak lebih daripada',symbol:'≤',ans:`${Y} ≤ 3${X}`},
+   {label:'(b)',sentence:'Jumlah kereta yang dihasilkan adalah selebih-lebihnya 80 unit.',trigger:'selebih-lebihnya',symbol:'≤',ans:`${X} + ${Y} ≤ 80`},
+   {label:'(c)',sentence:'Bilangan unit kereta N yang dihasilkan adalah sekurang-kurangnya 10 unit.',trigger:'sekurang-kurangnya',symbol:'≥',ans:`${Y} ≥ 10`}]);
+
+modelSlide('Modul 7.1 · Soalan 2','Soalan 2: Pengambilan pelajar kolej',
+  `Sebuah kolej menawarkan kursus P dan kursus Q. ${X} mewakili bilangan pelajar kursus P, ${Y} mewakili bilangan pelajar kursus Q.`,
+  [{label:'I',sentence:'Jumlah pelajar adalah tidak melebihi 100 orang.',trigger:'tidak melebihi',symbol:'≤',ans:`${X} + ${Y} ≤ 100`},
+   {label:'II',sentence:'Bilangan pelajar kursus Q adalah tidak lebih daripada empat kali bilangan pelajar kursus P.',trigger:'tidak lebih daripada',symbol:'≤',ans:`${Y} ≤ 4${X}`},
+   {label:'III',sentence:'Bilangan pelajar kursus Q melebihi bilangan pelajar kursus P sekurang-kurangnya lima orang.',trigger:'sekurang-kurangnya',symbol:'≥ (beza)',ans:`${Y} − ${X} ≥ 5`}]);
+
+modelSlide('Modul 7.1 · Soalan 3','Soalan 3: Pengeluaran telefon pintar',
+  `Sebuah kilang menghasilkan ${X} buah telefon pintar jenama A dan ${Y} buah jenama B setiap tahun. Kos sebuah jenama A ialah RM200, jenama B RM300.`,
+  [{sentence:'Jumlah telefon pintar yang dihasilkan dalam setahun tidak kurang daripada 2 600 buah.',trigger:'tidak kurang daripada',symbol:'≥',ans:`${X} + ${Y} ≥ 2 600`},
+   {sentence:'Bilangan telefon pintar jenama A mesti melebihi bilangan telefon pintar jenama B.',trigger:'mesti melebihi',symbol:'&gt;',ans:`${X} &gt; ${Y}`},
+   {sentence:'Jumlah peruntukan setahun ialah RM850 000.',trigger:'Jumlah peruntukan setahun ialah',symbol:'≤ (had perbelanjaan)',ans:`200${X} + 300${Y} ≤ 850 000`}]);
+
+modelSlide('Modul 7.1 · Soalan 4','Soalan 4: Program kerjaya',
+  `Suatu program kerjaya melibatkan ${X} pelajar lelaki dan ${Y} pelajar perempuan. Yuran seorang lelaki RM10, seorang perempuan RM8.`,
+  [{sentence:'Bilangan pelajar lelaki tidak boleh melebihi tiga kali bilangan pelajar perempuan.',trigger:'tidak boleh melebihi',symbol:'≤',ans:`${X} ≤ 3${Y}`},
+   {sentence:'Bilangan pelajar maksimum ialah 180 orang.',trigger:'maksimum ialah',symbol:'≤',ans:`${X} + ${Y} ≤ 180`},
+   {sentence:'Jumlah kutipan yuran mesti lebih daripada RM780.',trigger:'lebih daripada',symbol:'&gt;',ans:`10${X} + 8${Y} &gt; 780`}]);
+
+modelSlide('Modul 7.1 · Soalan 5','Soalan 5: Gerai Encik Lai',
+  `Encik Lai perlu menyediakan ${X} bungkus nasi ayam dan ${Y} bungkus nasi goreng untuk gerainya setiap hari.`,
+  [{sentence:'Nasi ayam yang diperlukan adalah selebih-lebihnya 20 bungkus.',trigger:'selebih-lebihnya',symbol:'≤',ans:`${X} ≤ 20`},
+   {sentence:'Bilangan bungkus nasi goreng adalah kurang daripada dua kali bilangan bungkus nasi ayam.',trigger:'kurang daripada',symbol:'&lt;',ans:`${Y} &lt; 2${X}`},
+   {sentence:'Bilangan bungkusan makanan minimum ialah 35.',trigger:'minimum ialah',symbol:'≥',ans:`${X} + ${Y} ≥ 35`}]);
+
+/* ---- Imbas kembali kemahiran graf (sebelum Soalan 6, kali pertama perlu lukis) ---- */
+slides.push({title:'Sebelum Soalan 6-7: imbas kembali garis padu/putus-putus',steps:4,draw(t){
+  const Pa=mkMini('<='),Pb=mkMini('<');
+  const sz={w:420,h:470};
+  plainFrame(`<div class="grid3" style="grid-template-columns:1fr 1fr 0.9fr;gap:14px">
+  <div class="mini"><div id="ma"></div><b>2${X} + ${Y} ≤ 6</b></div><div class="mini"><div id="mb"></div><b>2${X} + ${Y} &lt; 6</b></div>
+  <div style="font-size:19px;line-height:1.4"><div class="ask" style="font-size:15px"><b>Ingat nota Modul 7.1</b>≥/≤ → garis padu. &lt;/&gt; → garis putus-putus.</div>
+  ${t===0?ask('Titik (1, 4) berada pada garis. Adakah ia memenuhi setiap ketaksamaan?'):''}
+  ${t>=1?say(`Gantikan (1, 4):<br>kiri: 2(1) + 4 = 6 ≤ 6 <span class="ok">✓</span><br>kanan: 6 &lt; 6 <span class="no">✗</span>`):''}
+  ${t===1?ask('Maka garis kiri patut padu atau putus-putus? Garis kanan? Kenapa?'):''}
+  ${t>=2?say('Garis kiri <b>padu</b> (titik pada garis dibenarkan). Garis kanan <b>putus-putus</b> (tidak dibenarkan).'):''}
+  ${t>=2?say('<b>Konsep titik ujian:</b> pilih satu titik TIDAK pada garis (selalunya (0, 0), kecuali garis itu melalui asalan). Gantikan ke ketaksamaan asal: jika <b>benar</b>, lorek sisi yang mengandungi titik itu; jika <b>salah</b>, lorek sisi sebelah.'):''}
+  ${t===2?ask('Uji (0, 0) pada 2x + y ≤ 6: 2(0)+0 = 0 ≤ 6, benar atau salah? Sisi mana yang dilorek?'):''}
+  ${t>=3?say(`Benar → lorek sisi yang mengandungi (0, 0).`):''}</div></div>`);
+  const mk=(P,id,ok)=>{
+    const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');$(id).appendChild(svg);
+    const st={uid:id.slice(1),lines:[1],mode,shade:t>=3?[0]:[],pts:t>=1?[{x:1,y:4,fill:ok?OKC:'#fff',stroke:ok?'#fff':BAD,r:9,label:ok?'sah':'tidak sah',lc:ok?OKC:BAD}]:[{x:1,y:4,fill:'#fff',stroke:INK,r:9,label:'(1, 4)'}]};
+    drawGraph(svg,P,st,sz);
+  };
+  mk(Pa,'#ma',true);mk(Pb,'#mb',false);
+}});
+
+modelGraphSlide('Modul 7.1 · Soalan 6','Soalan 6: Bacaan puisi',
+  `Puan Yong ingin memilih ${X} orang murid lelaki dan ${Y} orang murid perempuan untuk menyertai bacaan puisi.`,
+  [{label:'I',sentence:'Bilangan murid lelaki tidak melebihi 6 orang.',trigger:'tidak melebihi',symbol:'≤',ans:`${X} ≤ 6`},
+   {label:'II',sentence:'Sekurang-kurangnya 2 orang murid dipilih.',trigger:'Sekurang-kurangnya',symbol:'≥',ans:`${X} + ${Y} ≥ 2`},
+   {label:'III',sentence:'Bilangan murid lelaki mesti melebihi bilangan murid perempuan.',trigger:'mesti melebihi',symbol:'&gt;',ans:`${X} &gt; ${Y}`}], PS6);
+
+modelGraphSlide('Modul 7.1 · Soalan 7','Soalan 7: Komponen elektronik',
+  `Sebuah kilang elektronik menghasilkan ${X} unit komponen X dan ${Y} unit komponen Y. Kos sekomponen X RM4, komponen Y RM3.`,
+  [{label:'I',sentence:'Jumlah bilangan komponen elektronik yang dihasilkan dalam setiap jam sekurang-kurangnya 10 unit.',trigger:'sekurang-kurangnya',symbol:'≥',ans:`${X} + ${Y} ≥ 10`},
+   {label:'II',sentence:'Bilangan komponen X tidak melebihi 3 kali bilangan komponen Y.',trigger:'tidak melebihi',symbol:'≤',ans:`${X} ≤ 3${Y}`},
+   {label:'III',sentence:'Kos penghasilan maksimum bagi setiap jam ialah RM120.',trigger:'maksimum',symbol:'≤',ans:`4${X} + 3${Y} ≤ 120`}], PS7);
+
+/* ---- Kesilapan lazim (imbas kembali, sebelum masuk 7.2) ---- */
+slides.push({title:'Kesilapan lazim melukis graf',steps:6,draw(t){
+  const R=[['Skala paksi salah','Kira semua pintasan dahulu, kemudian pilih skala'],
+    ['Garis tidak tepat (meneka kecerunan)',`Kaedah dua pintasan: ${X} = 0 dan ${Y} = 0`],
+    ['Padu atau putus-putus tersalah','≤ dan ≥ padu. &lt; dan &gt; putus-putus'],
+    ['Rantau tersalah lorek','Guna titik ujian. Jika garis melalui asalan, guna titik lain'],
+    ['Bucu dibaca anggaran daripada graf','Sahkan dengan persamaan serentak'],
+    ['Membundar bucu apabila jawapan mesti integer','Semak titik integer dalam rantau, bukan bundar bucu']];
+  plainFrame(`<div style="padding:8px 30px"><h2 style="margin-bottom:10px">Semak sebelum serah: kesilapan yang kerap berlaku</h2>
+  <table style="font-size:23px"><tr><th style="width:45%">Kesilapan</th><th>Pembetulan</th></tr>${R.map((r,i)=>i<=t?`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`:'').join('')}</table></div>`);
+}});
+
+/* ---- 7.2 Aplikasi Pengaturcaraan Linear (ikut modul, Soalan 1-4) ---- */
+divider('Bahagian 3 · Modul 7.2','7.2 Aplikasi Pengaturcaraan Linear','Soalan 1 hingga 4 daripada modul — setiap satu diselesaikan penuh secara graf: bentuk model, lukis rantau tersaur R, gelongsor garis objektif, baca dan sahkan jawapan dalam konteks.');
+
+slides.push({title:'Kaedah modul: 9 langkah menyelesaikan secara graf',steps:9,draw(t){
+  const S=[['🔍','Tafsirkan masalah dan tentukan pemboleh ubah keputusan.'],
+    ['✅','Kenal pasti semua kekangan yang wujud.'],
+    ['📝','Bentuk model matematik dalam bentuk sistem ketaksamaan linear.'],
+    ['📐','Lukis graf dan tentukan rantau tersaur, R, yang memenuhi semua kekangan.'],
+    ['📎','Tulis fungsi objektif bagi kuantiti yang hendak dimaksimumkan/diminimumkan: k = ax + by.'],
+    ['✏️','Pilih satu nilai yang sesuai bagi k dan lukis garis lurus fungsi objektif.'],
+    ['↔️','Gerakkan garis fungsi objektif secara selari untuk menentukan titik optimum.'],
+    ['🧮','Gantikan koordinat titik optimum ke dalam fungsi objektif untuk nilai maksimum/minimum.'],
+    ['🎯','Tafsirkan nilai optimum berdasarkan konteks masalah yang diberikan.']];
+  const parts=S.map((s,i)=>{
+    if(i>t)return '';
+    const cur=i===t;
+    const card=`<div class="card" style="min-height:130px;padding:12px 16px;flex:1 1 260px;${cur?`outline:3px solid ${OBJ};outline-offset:2px`:''}"><span class="n" style="width:32px;height:32px;line-height:32px;font-size:18px">${i+1}</span> <span style="font-size:27px;vertical-align:middle">${s[0]}</span><p style="font-size:18px;margin-top:6px">${s[1]}</p></div>`;
+    const arrow=i<t?`<div style="display:flex;align-items:center;font-size:26px;color:${OKC};flex:none">→</div>`:'';
+    return card+arrow;
+  }).join('');
+  plainFrame(`<div style="padding:6px 30px"><span class="stag" style="background:${OKC}">Modul 7.2</span>
+  <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;align-items:stretch">${parts}</div></div>`);
+}});
+
+/* ---- Imbas kembali: langkah 5-8 modul (garis objektif, k, bucu) sebelum Soalan 1 ---- */
+slides.push({title:'Langkah 5-7 modul: garis objektif dan nilai k',steps:3,draw(t){
+  const P=P1,V=vertices(P),best=bestOf(P,V);
+  if(ST.k==null)ST.k=14;
+  if(t===1)ST.k=best.v;
+  const msgs=[
+    ask(`Gelongsor k. Apakah yang sama pada semua garis ini? Apakah yang berubah?`),
+    ask('Bucu terakhir yang disentuh. Berapakah nilai maksimum?'),
+    ask('Mengapa titik optimum sentiasa sudut, bukan tengah sisi atau dalam rantau?')];
+  const extra=t===0?say('Semua garis <b>selari</b> kerana cerunnya sama. Hanya <b>k</b> berubah. Ini langkah 5-6 modul: tulis k = ax+by, pilih satu nilai k, lukis sebagai <b>garis rujukan putus-putus</b>.'):
+    t===1?say(`Garis menyentuh bucu ${vtxText(V[best.i])}. <i>P</i> = 3(${fnum(V[best.i].x)}) + 5(${fnum(V[best.i].y)}) = <b>${fnum(best.v)}</b> (langkah 7-8 modul: gerak selari, gantikan ke fungsi objektif)`):
+    say('Selagi garis masih memotong bahagian dalam rantau, ada ruang untuk gelongsor lagi. Titik <b>terakhir</b> yang masih menyentuh rantau mesti satu sudut.');
+  const rp=stag(t+1,3,'Garis selari, k berubah')+msgs[t]+
+    `<div class="row"><b>k</b><input id="ks" type="range" min="0" max="45" step="1" value="${ST.k}"><b id="kv" style="min-width:34px">${fnum(ST.k)}</b></div>
+     <div class="eq">${P.obj.html} = <span id="kk">${fnum(ST.k)}</span></div><div id="kst" class="say"></div>${extra}`;
+  const redraw=graphFrame(P,rp,()=>({lines:[1,1,1],nopts:true,feas:true,verts:true,k:ST.k,optV:(t>=1&&Math.abs(ST.k-best.v)<EPS)?best.i:null}));
+  const upd=()=>{$('#kv').textContent=fnum(ST.k);$('#kk').textContent=fnum(ST.k);const s=objStatus(P,ST.k);$('#kst').innerHTML=`<span class="${s.cls}">${s.msg}</span>`;};
+  $('#ks').addEventListener('input',e=>{ST.k=+e.target.value;upd();redraw();});
+  upd();
+}});
+
+function gcd(a,b){return b?gcd(b,a%b):a;}
+slides.push({title:'Teknik bantu: memilih nilai k',steps:1,draw(){
+  if(ST.a==null){ST.a=3;ST.b=5;ST.m=1;}
+  const rp=`<h2>Teknik bantu: pekali menjadi pintasan</h2>
+  <div class="say small">Modul guru pilih sahaja satu nilai k yang munasabah (cth. "Katakan k = RM450") dan lukis terus sebagai <b>garis rujukan</b>. Teknik di bawah ialah cara tambahan untuk dapatkan garis rujukan yang kemas (pintasan integer kecil) tanpa meneka.</div>
+  <div class="eq" style="border-color:${OBJ}">k = a × b &nbsp;→&nbsp; pintasan-${X} = b, pintasan-${Y} = a</div>
+  <div class="row"><b>a</b><input id="ia" type="number" min="1" max="30" value="${ST.a}"><b>b</b><input id="ib" type="number" min="1" max="30" value="${ST.b}"><b>pengganda</b><input id="im" type="range" min="1" max="6" value="${ST.m}" style="width:150px"><b id="imv">${ST.m}</b></div>
+  <div id="calc" class="say"></div>
+  <div class="ask"><b>Ingat</b>k hanya untuk melukis arah garis. Ia bukan jawapan. Hanya cerun yang penting.</div>`;
+  let redraw=null;
+  const calc=()=>{
+    const a=Math.max(1,Math.min(30,Math.round(+$('#ia').value)||1)),b=Math.max(1,Math.min(30,Math.round(+$('#ib').value)||1)),m=+$('#im').value;
+    ST.a=a;ST.b=b;ST.m=m;$('#imv').textContent=m;
+    const g=gcd(a,b),a2=a/g,b2=b/g,k=a2*b2*m,xi=b2*m,yi=a2*m;
+    $('#calc').innerHTML=`${a2!==a||b2!==b?`Ringkaskan: ${a}${X} + ${b}${Y} menjadi ${a2}${X} + ${b2}${Y}<br>`:''}k = ${a2} × ${b2}${m>1?' × '+m:''} = <b>${k}</b><br>Pintasan-${X} = ${xi}, pintasan-${Y} = ${yi}<br>Garis: ${a2}${X} + ${b2}${Y} = ${k} melalui (${xi}, 0) dan (0, ${yi}).${Math.max(xi,yi)>20?'<br><span class="no">Garis terlalu besar. Kurangkan pengganda.</span>':''}`;
+    return {a2,b2,k,xi,yi};
+  };
+  content.className='gpbg';
+  content.innerHTML=`<div class="split"><div class="gcol"><svg id="g" xmlns="http://www.w3.org/2000/svg"></svg></div><div class="rcol">${rp}</div></div>`;
+  const draw=()=>{
+    const r=calc(),mx=Math.max(10,Math.ceil(Math.max(r.xi,r.yi)*1.15)),Pm={xMin:0,xMax:mx,yMin:0,yMax:mx,cons:[],obj:{a:r.a2,b:r.b2,type:'max',name:'P',html:`${r.a2}${X} + ${r.b2}${Y}`}};
+    drawGraph($('#g'),Pm,{uid:'k',k:r.k,objLabel:false,pts:[{x:r.xi,y:0,fill:OBJ,stroke:'#fff',r:7,label:`(${r.xi}, 0)`,dy:-14,dx:0,anchor:'middle'},{x:0,y:r.yi,fill:OBJ,stroke:'#fff',r:7,label:`(0, ${r.yi})`,dx:14,dy:5}]},GS);
+  };
+  ['ia','ib','im'].forEach(id=>$('#'+id).addEventListener('input',draw));
+  draw();
+}});
+
+slides.push({title:'Langkah 7-8 modul: sahkan bucu dengan persamaan serentak',steps:2,draw(t){
+  const P=P1,V=vertices(P),best=bestOf(P,V);
+  const show=()=>{
+    const rows=V.map((v,i)=>`<tr data-sel="v:${i}" class="${ST.sel&&ST.sel.i===i?'sel':''} ${t>=1&&i===best.i?'hi':''}"><td>${vtxText(v)}</td><td>${t>=1?`3(${fnum(v.x)}) + 5(${fnum(v.y)}) = <b>${fnum(pval(P,v.x,v.y))}</b>`:'<span class="muted">?</span>'}</td></tr>`).join('');
+    let det='';
+    if(ST.sel){
+      const v=V[ST.sel.i],c1=P.cons[v.pair[0]],c2=P.cons[v.pair[1]];
+      det=`<div class="say small"><b>Bucu ${vtxText(v)}</b> ialah persilangan<br>${c1.eq} dan ${c2.eq}.<br>${P.cons.filter(c=>!c.implicit).map(c=>`${c.html}: ${gsub(c,v.x,v.y)} <span class="${okC(c,v.x,v.y,true)?'ok':'no'}">${okC(c,v.x,v.y,true)?'✓':'✗'}</span>`).join('<br>')}</div>`;
+    }
+    return `${stag(t+1,2,t===0?'Baca dan sahkan bucu':'Nilai fungsi objektif di setiap bucu')}${t===0?ask('Klik satu bucu pada graf. Selesaikan dua persamaannya. Adakah sama dengan bacaan graf?'):ask('Bucu mana yang memberi nilai terbesar?')}
+    <table><tr><th>Bucu</th><th>${P.obj.html}</th></tr>${rows}</table>${det}${t>=1?say(`Maksimum: <b>${fnum(best.v)}</b> pada ${vtxText(V[best.i])}.`):''}`;
+  };
+  let redraw;
+  const setSel=s=>{const [k,v]=s.split(':');ST.sel={t:'v',i:+v};render();};
+  const render=()=>{
+    redraw=graphFrame(P,show(),()=>({lines:[1,1,1],nopts:true,feas:true,verts:true,sel:ST.sel,optV:t>=1?best.i:null,onSel:setSel}));
+    document.querySelectorAll('tr[data-sel]').forEach(r=>r.addEventListener('click',()=>setSel(r.dataset.sel)));
+  };
+  render();
+}});
+
+/* ---- 10b. Contoh sebenar daripada modul ---- */
+slides.push({title:'Contoh sebenar daripada modul: Program Motivasi',steps:(()=>{const{gSteps}=graphStepInfo(P3);return 3+1+gSteps+3;})(),draw(t){
+  const P=P3,V=vertices(P),best=bestOf(P,V),{gSteps}=graphStepInfo(P);
+  const cite=`<span class="stag" style="background:${OKC}">Modul 7.2 · Soalan 1</span>`;
+  const parts=[
+    {label:'I',sentence:'Jumlah bilangan peserta tidak melebihi 80 orang.',trigger:'tidak melebihi',symbol:'≤',ans:`${X} + ${Y} ≤ 80`},
+    {label:'II',sentence:'Bilangan murid tidak boleh melebihi 3 kali bilangan guru.',trigger:'tidak boleh melebihi',symbol:'≤',ans:`${X} ≤ 3${Y}`},
+    {label:'III',sentence:'Jumlah yuran yang dikutip mesti lebih daripada RM3 600.',trigger:'lebih daripada',symbol:'&gt;',ans:`120${X} + 60${Y} &gt; 3600`}];
+  const n=parts.length;
+  if(t<=n){
+    const final=t===n?say(`<b>Model lengkap.</b> Fungsi objektif: Maksimumkan <i>J</i> = 120${X} + 60${Y} (jumlah yuran). <br><b>Fikir:</b> bandingkan kekangan III dengan <i>J</i> — apakah yang sama?`):'';
+    plainFrame(`<div style="padding:8px 28px;font-size:22px;line-height:1.42">${cite}
+      <h2>Program motivasi</h2>
+      <div class="story">Suatu program motivasi disertai oleh ${X} orang murid dan ${Y} orang guru. Yuran penyertaan seorang murid ialah RM120 dan seorang guru ialah RM60.</div>
+      <div style="margin-top:8px">${modelRows(parts,t)}</div>${final}</div>`);
+    return;
+  }
+  const gt=t-(n+1);
+  if(gt<gSteps){
+    renderGraphStep(P,'Modul 7.2 · Soalan 1',gt,{w:880,h:600});
+    return;
+  }
+  const after=gt-gSteps;
+  if(after===0){
+    const body=`Apabila ${X} = 30: daripada I, ${X}+${Y} ≤ 80 memberi ${Y} ≤ 50. Daripada II, ${X} ≤ 3${Y} memberi ${Y} ≥ 10.<br>Bilangan <b>minimum guru = 10 orang</b>, <b>maksimum guru = 50 orang</b>.`;
+    const rp=cite+stag(1,3,'(c)(i) Apabila murid = 30 orang')+ask('Lukis garis tegak x = 30. Di antara mana rantau R disentuh?')+say(body);
+    graphFrame(P,rp,()=>({lines:[1,1,1],feas:true,seg:[[30,10],[30,50]],
+      pts:[{x:30,y:10,fill:GOLD,stroke:INK,r:9,label:'(30, 10) min',dx:10,dy:16},{x:30,y:50,fill:GOLD,stroke:INK,r:9,label:'(30, 50) maks',dx:10,dy:-14}]}),{w:880,h:600});
+    return;
+  }
+  if(after===1){
+    const body=`Pilih satu nilai munasabah bagi <i>J</i> — bukan jawapan, sekadar untuk tentukan arah garis. Katakan <i>J</i> = 4 800.<br>Lukis garis <b>120${X} + 60${Y} = 4 800</b> sebagai garis rujukan putus-putus — selari dengan semua garis <i>J</i> yang lain.`;
+    const rp=cite+stag(2,3,'Pilih k dan lukis garis rujukan')+ask('Garis rujukan ini sentuh rantau R? Jika gelongsor ke luar (menjauhi asalan), bucu mana akan disentuh akhir sekali?')+say(body);
+    graphFrame(P,rp,()=>({lines:[1,1,1],feas:true,k:4800,kDashed:true}),{w:880,h:600});
+    return;
+  }
+  const oi=V.findIndex(v=>Math.abs(v.x-60)<1e-6&&Math.abs(v.y-20)<1e-6);
+  if(ST.k==null)ST.k=8400;
+  const body=`Bucu optimum ialah <b>(60, 20)</b> — titik yang paling jauh dalam arah <i>J</i> dalam rantau R.<br><i>J</i> = 120(60) + 60(20) = 7 200 + 1 200 = <b>RM8 400</b>.<br><b>Cuba sendiri:</b> gelongsor k. Lihat bila garis tinggalkan rantau R.`;
+  const rp=cite+stag(3,3,'(c)(ii) Jumlah yuran maksimum')+ask('Garis J selari dengan kekangan III. Mengapa bucu (60, 20) memberi nilai terbesar?')+say(body)+
+    `<div class="row"><b>J</b><input id="ks" type="range" min="0" max="12000" step="100" value="${ST.k}"><b id="kv" style="min-width:60px">${fnum(ST.k)}</b></div><div id="kst" class="say"></div>`;
+  const redraw=graphFrame(P,rp,()=>({lines:[1,1,1],feas:true,verts:true,k:ST.k,optV:Math.abs(ST.k-8400)<EPS?oi:null}),{w:880,h:600});
+  const upd=()=>{$('#kv').textContent=fnum(ST.k);const s=objStatus(P,ST.k);$('#kst').innerHTML=`<span class="${s.cls}">${s.msg}</span>`;};
+  $('#ks').addEventListener('input',e=>{ST.k=+e.target.value;upd();redraw();});
+  upd();
+}});
+
+/* ---- 7.2 Soalan 2 ---- */
+slides.push({title:'Modul 7.2 · Soalan 2: Bekas plastik',steps:(()=>{const{gSteps}=graphStepInfo(P4);return 3+1+gSteps+3;})(),draw(t){
+  const P=P4,{gSteps}=graphStepInfo(P);
+  const cite=`<span class="stag" style="background:${OKC}">Modul 7.2 · Soalan 2</span>`;
+  const parts=[
+    {label:'I',sentence:'Jumlah bilangan bekas yang dihasilkan mesti melebihi 50 buah sehari.',trigger:'mesti melebihi',symbol:'&gt;',ans:`${X} + ${Y} &gt; 50`},
+    {label:'II',sentence:'Mesin itu boleh beroperasi hanya selama 16 jam sehari.',trigger:'hanya selama 16 jam',symbol:'≤ (had masa)',ans:`9${X}+6${Y}≤960 ⟹ 3${X} + 2${Y} ≤ 320`},
+    {label:'III',sentence:'Nisbah bilangan bekas jenis A kepada bilangan bekas jenis B ialah selebih-lebihnya 2:3.',trigger:'selebih-lebihnya',symbol:'≤ (nisbah)',ans:`3${X} ≤ 2${Y}`}];
+  const n=parts.length;
+  if(t<=n){
+    const final=t===n?say(`<b>Model lengkap.</b> <b>Fikir:</b> soalan minta <b>julat</b> jumlah jualan (RM9 sebuah bekas A, RM5 sebuah bekas B), bukan satu nilai maksimum sahaja. Apa bezanya?`):'';
+    plainFrame(`<div style="padding:8px 28px;font-size:22px;line-height:1.42">${cite}
+      <h2>Bekas plastik A dan B</h2>
+      <div class="story">Sebuah kilang menghasilkan ${X} buah bekas jenis A dan ${Y} buah bekas jenis B sehari dengan sebuah mesin (masa: A = 9 minit, B = 6 minit).</div>
+      <div style="margin-top:8px">${modelRows(parts,t)}</div>${final}</div>`);
+    return;
+  }
+  const gt=t-(n+1);
+  if(gt<gSteps){
+    renderGraphStep(P,'Modul 7.2 · Soalan 2',gt,{w:880,h:600});
+    return;
+  }
+  const after=gt-gSteps;
+  if(after===0){
+    const body=`Bucu paling dekat dengan asalan ialah (0, 50), pada paksi-${Y} dan garis ${X}+${Y}=50 (sempadan putus-putus — tidak termasuk).<br><i>J</i> = 9(0) + 5(50) = <b>RM250</b> — <b>tidak termasuk</b> kerana ${X}+${Y} &gt; 50 ketat.`;
+    const rp=cite+'<h2>(c) Jualan minimum</h2>'+ask('Bucu mana paling dekat dengan asalan dalam rantau R? Garis itu putus-putus atau padu?')+say(body);
+    graphFrame(P,rp,()=>({lines:[1,1,1],feas:true,
+      pts:[{x:0,y:50,fill:GOLD,stroke:INK,r:9,label:'(0, 50)',dx:12,dy:-6}]}),{w:880,h:600});
+    return;
+  }
+  if(after===1){
+    const body=`Pilih satu nilai munasabah bagi <i>J</i> — bukan jawapan, sekadar untuk tentukan arah garis. Katakan <i>J</i> = RM450.<br>Lukis garis <b>9${X} + 5${Y} = 450</b> sebagai garis rujukan putus-putus.`;
+    const rp=cite+'<h2>Pilih J dan lukis garis rujukan</h2>'+ask('Garis rujukan ini sentuh rantau R? Jika gelongsor keluar, bucu mana akan disentuh akhir sekali?')+say(body);
+    graphFrame(P,rp,()=>({lines:[1,1,1],feas:true,k:450,kDashed:true}),{w:880,h:600});
+    return;
+  }
+  if(ST.k==null)ST.k=877;
+  const body=`Gelongsor garis objektif <i>J</i> = 9${X} + 5${Y} keluar sehingga sentuhan terakhir dengan R.<br>Bucu sebenar (persilangan tepat) ialah <span class="no">(53⅓, 80)</span> — bulatan kosong merah pada graf. Tetapi bilangan bekas mesti <b>integer</b>, jadi kita ambil <span class="ok">(53, 80)</span> — bulatan emas, titik integer terdekat yang masih dalam R.<br><i>J</i> = 9(53) + 5(80) = 477 + 400 = <b>RM877</b>.<br><b>Julat jumlah jualan: RM250 &lt; J ≤ RM877</b><br><b>Cuba sendiri:</b> gelongsor J. Lihat bila garis tinggalkan rantau R.`;
+  const rp=cite+'<h2>(c) Jualan maksimum</h2>'+ask('Gelongsor garis J keluar. Bucu sebenar integer ke? Apa kita buat?')+say(body)+
+    `<div class="row"><b>J</b><input id="ks" type="range" min="0" max="1200" step="10" value="${ST.k}"><b id="kv" style="min-width:50px">${fnum(ST.k)}</b></div><div id="kst" class="say"></div>`;
+  const redraw=graphFrame(P,rp,()=>({lines:[1,1,1],feas:true,k:ST.k,
+    pts:[{x:160/3,y:80,fill:'#fff',stroke:BAD,r:9,label:'(53⅓, 80) bucu sebenar',lc:BAD,dx:-10,dy:22,anchor:'end'},
+         {x:53,y:80,fill:GOLD,stroke:INK,r:9,label:'(53, 80) diambil',dx:12,dy:-10}]}),{w:880,h:600});
+  const upd=()=>{$('#kv').textContent=fnum(ST.k);const s=objStatus(P,ST.k);$('#kst').innerHTML=`<span class="${s.cls}">${s.msg}</span>`;};
+  $('#ks').addEventListener('input',e=>{ST.k=+e.target.value;upd();redraw();});
+  upd();
+}});
+
+/* ---- 7.2 Soalan 3 ---- */
+slides.push({title:'Modul 7.2 · Soalan 3: Arca pasu',steps:(()=>{const{gSteps}=graphStepInfo(P5);return 3+1+gSteps+3;})(),draw(t){
+  const P=P5,V=vertices(P),best=bestOf(P,V),{gSteps}=graphStepInfo(P);
+  const cite=`<span class="stag" style="background:${OKC}">Modul 7.2 · Soalan 3</span>`;
+  const parts=[
+    {sentence:'Mesin P beroperasi tidak melebihi 2 000 minit.',trigger:'tidak melebihi',symbol:'≤',ans:`40${X}+20${Y}≤2000 ⟹ 2${X} + ${Y} ≤ 100`},
+    {sentence:'Mesin Q pula beroperasi sekurang-kurangnya 1 800 minit.',trigger:'sekurang-kurangnya',symbol:'≥',ans:`30${X}+60${Y}≥1800 ⟹ ${X} + 2${Y} ≥ 60`},
+    {sentence:'Penghasilan arca pasu B tidak melebihi tiga kali ganda penghasilan arca pasu A.',trigger:'tidak melebihi tiga kali ganda',symbol:'≤',ans:`${Y} ≤ 3${X}`}];
+  const n=parts.length;
+  if(t<=n){
+    const final=t===n?say(`<b>Model lengkap.</b> Fungsi objektif: Maksimumkan <i>K</i> = 300${X} + 250${Y} (keuntungan seminggu).`):'';
+    plainFrame(`<div style="padding:8px 28px;font-size:22px;line-height:1.42">${cite}
+      <h2>Arca pasu A dan B</h2>
+      <div class="story">Kilang menghasilkan ${X} unit arca pasu A dan ${Y} unit arca pasu B seminggu, guna mesin P (A=40 min, B=20 min) dan mesin Q (A=30 min, B=60 min).</div>
+      <div style="margin-top:8px">${modelRows(parts,t)}</div>${final}</div>`);
+    return;
+  }
+  const gt=t-(n+1);
+  if(gt<gSteps){
+    renderGraphStep(P,'Modul 7.2 · Soalan 3',gt,{w:880,h:600});
+    return;
+  }
+  const after=gt-gSteps;
+  if(after===0){
+    const body=`Apabila ${X} = 30: daripada 2${X}+${Y} ≤ 100 → ${Y} ≤ 40. Daripada ${X}+2${Y} ≥ 60 → ${Y} ≥ 15.<br>Bilangan <b>minimum arca pasu B = 15 unit</b>.`;
+    const rp=cite+'<h2>(c)(i) Apabila pasu A = 30 unit</h2>'+ask('Lukis garis tegak x = 30. Nilai y paling kecil yang masih dalam R?')+say(body);
+    graphFrame(P,rp,()=>({lines:[1,1,1],feas:true,seg:[[30,15],[30,40]],
+      pts:[{x:30,y:15,fill:GOLD,stroke:INK,r:9,label:'(30, 15) min',dx:10,dy:16}]}),{w:880,h:600});
+    return;
+  }
+  if(after===1){
+    const body=`Pilih satu nilai munasabah bagi <i>K</i> — bukan jawapan, sekadar untuk tentukan arah garis. Katakan <i>K</i> = RM15 000.<br>Lukis garis <b>300${X} + 250${Y} = 15 000</b> sebagai garis rujukan putus-putus.`;
+    const rp=cite+'<h2>Pilih K dan lukis garis rujukan</h2>'+ask('Garis rujukan ini sentuh rantau R? Jika gelongsor keluar, bucu mana akan disentuh akhir sekali?')+say(body);
+    graphFrame(P,rp,()=>({lines:[1,1,1],feas:true,k:15000,kDashed:true}),{w:880,h:600});
+    return;
+  }
+  if(ST.k==null)ST.k=best.v;
+  const rp=cite+'<h2>(c)(ii) Keuntungan maksimum</h2>'+ask('Bucu mana memberi keuntungan terbesar?')+
+    say(`Bucu optimum: <b>${vtxText(V[best.i])}</b>.<br><i>K</i> = 300(${fnum(V[best.i].x)}) + 250(${fnum(V[best.i].y)}) = <b>RM${fnum(best.v)}</b>.<br><b>Cuba sendiri:</b> gelongsor K. Lihat bila garis tinggalkan rantau R.`)+
+    `<div class="row"><b>K</b><input id="ks" type="range" min="0" max="30000" step="200" value="${ST.k}"><b id="kv" style="min-width:60px">${fnum(ST.k)}</b></div><div id="kst" class="say"></div>`;
+  const redraw=graphFrame(P,rp,()=>({lines:[1,1,1],feas:true,verts:true,nopts:true,k:ST.k,optV:Math.abs(ST.k-best.v)<EPS?best.i:null}),{w:880,h:600});
+  const upd=()=>{$('#kv').textContent=fnum(ST.k);const s=objStatus(P,ST.k);$('#kst').innerHTML=`<span class="${s.cls}">${s.msg}</span>`;};
+  $('#ks').addEventListener('input',e=>{ST.k=+e.target.value;upd();redraw();});
+  upd();
+}});
+
+/* ---- 7.2 Soalan 4 ---- */
+slides.push({title:'Modul 7.2 · Soalan 4: Kedai perkakasan',steps:(()=>{const{gSteps}=graphStepInfo(P6);return 3+1+gSteps+3;})(),draw(t){
+  const P=P6,V=vertices(P),best=bestOf(P,V),{gSteps}=graphStepInfo(P);
+  const cite=`<span class="stag" style="background:${OKC}">Modul 7.2 · Soalan 4</span>`;
+  const parts=[
+    {label:'I',sentence:'Jumlah peruntukan ialah RM3 600.',trigger:'Jumlah peruntukan ialah',symbol:'≤ (had perbelanjaan)',ans:`80${X} + 40${Y} ≤ 3600 ⟹ 2${X}+${Y}≤90`},
+    {label:'II',sentence:'Bilangan penyembur tekanan yang dibeli adalah tidak melebihi 4 kali bilangan kereta sorong.',trigger:'tidak melebihi',symbol:'≤',ans:`${Y} ≤ 4${X}`},
+    {label:'III',sentence:'Bilangan penyembur tekanan yang dibeli adalah sekurang-kurangnya separuh daripada bilangan kereta sorong.',trigger:'sekurang-kurangnya separuh',symbol:'≥',ans:`${Y} ≥ 0.5${X}`}];
+  const n=parts.length;
+  if(t<=n){
+    const final=t===n?say(`<b>Model lengkap.</b> Fungsi objektif: Maksimumkan <i>k</i> = ${X} + ${Y} (jumlah bilangan perkakas). Kekangan III diberikan sebagai rantau berlorek dalam graf (soalan asal).`):'';
+    plainFrame(`<div style="padding:8px 28px;font-size:22px;line-height:1.42">${cite}
+      <h2>Kereta sorong dan penyembur tekanan</h2>
+      <div class="story">Kedai perkakasan membeli ${X} kereta sorong (RM80) dan ${Y} penyembur tekanan (RM40) daripada pemborong.</div>
+      <div style="margin-top:8px">${modelRows(parts,t)}</div>${final}</div>`);
+    return;
+  }
+  const gt=t-(n+1);
+  if(gt<gSteps){
+    renderGraphStep(P,'Modul 7.2 · Soalan 4',gt,{w:880,h:600});
+    return;
+  }
+  const after=gt-gSteps;
+  if(after===0){
+    const body=`Apabila ${X} = 35: daripada 2${X}+${Y} ≤ 90 → ${Y} ≤ 20. (Kekangan II longgar di sini.)<br>Bilangan <b>maksimum penyembur tekanan = 20 buah</b>.`;
+    const rp=cite+'<h2>(d)(i) Apabila kereta sorong = 35 buah</h2>'+ask('Lukis garis tegak x = 35. Nilai y maksimum dalam R?')+say(body);
+    graphFrame(P,rp,()=>({lines:[1,1,1],feas:true,seg:[[35,17.5],[35,20]],
+      pts:[{x:35,y:20,fill:GOLD,stroke:INK,r:9,label:'(35, 20) maks',dx:-10,dy:-14,anchor:'end'}]}),{w:880,h:600});
+    return;
+  }
+  if(after===1){
+    const body=`Pilih satu nilai munasabah bagi <i>k</i> — bukan jawapan, sekadar untuk tentukan arah garis. Katakan <i>k</i> = 30.<br>Lukis garis <b>${X} + ${Y} = 30</b> sebagai garis rujukan putus-putus.`;
+    const rp=cite+'<h2>Pilih k dan lukis garis rujukan</h2>'+ask('Garis rujukan ini sentuh rantau R? Jika gelongsor keluar, bucu mana akan disentuh akhir sekali?')+say(body);
+    graphFrame(P,rp,()=>({lines:[1,1,1],feas:true,k:30,kDashed:true}),{w:880,h:600});
+    return;
+  }
+  if(ST.k==null)ST.k=best.v;
+  const rp=cite+'<h2>(d)(ii) Jumlah maksimum perkakas</h2>'+ask('Bucu mana memberi jumlah terbesar?')+
+    say(`Bucu optimum: <b>${vtxText(V[best.i])}</b>.<br><i>k</i> = ${X}+${Y} = ${fnum(V[best.i].x)} + ${fnum(V[best.i].y)} = <b>${fnum(best.v)} buah</b>.<br><b>Cuba sendiri:</b> gelongsor k. Lihat bila garis tinggalkan rantau R.`)+
+    `<div class="row"><b>k</b><input id="ks" type="range" min="0" max="100" step="1" value="${ST.k}"><b id="kv" style="min-width:40px">${fnum(ST.k)}</b></div><div id="kst" class="say"></div>`;
+  const redraw=graphFrame(P,rp,()=>({lines:[1,1,1],feas:true,verts:true,nopts:true,k:ST.k,optV:Math.abs(ST.k-best.v)<EPS?best.i:null}),{w:880,h:600});
+  const upd=()=>{$('#kv').textContent=fnum(ST.k);const s=objStatus(P,ST.k);$('#kst').innerHTML=`<span class="${s.cls}">${s.msg}</span>`;};
+  $('#ks').addEventListener('input',e=>{ST.k=+e.target.value;upd();redraw();});
+  upd();
+}});
+
+/* ---- Tambahan: bukan dalam modul, tapi mungkin keluar dalam peperiksaan ---- */
+divider('Tambahan','Kes yang tiada dalam modul','');
+
+slides.push({title:'Tambahan: apabila jawapan mesti integer',steps:5,draw(t){
+  const P=P2,V=vertices(P),best=bestOf(P,V),bv=V[best.i];
+  const L=lattice(P),LI=L.filter(p=>p.ok).map(p=>({x:p.x,y:p.y,v:pval(P,p.x,p.y)})).sort((u,v)=>v.v-u.v);
+  const rx=Math.round(bv.x),ry=Math.round(bv.y);
+  const showLat=t>=3;
+  if(ST.k==null)ST.k=8;
+  if(t===3&&ST.lastT!==3)ST.k=8;
+  if(t===4)ST.k=LI[0].v;
+  ST.lastT=t;
+  const story=`<div class="story small" style="font-size:18px;line-height:1.4;padding:8px 12px">Bengkel membuat ${X} kerusi dan ${Y} meja (integer). Menggergaji: kerusi 1 jam, meja 2 jam, ada 6 jam. Mengecat: kerusi 2 jam, meja 1 jam, ada 7 jam. Untung <i>P</i> = 3${X} + 2${Y} (ratus ringgit). Maksimumkan.</div>`;
+  const info=[
+    ask('Bucu paling jauh nampak optimum. Adakah ia integer?'),
+    say(`Bucu optimum ialah <b>${vtxText(bv)}</b> ≈ (${fnum(bv.x)}, ${fnum(bv.y)}).<br><i>P</i> = <b>${fnum(best.v)}</b>. Ini <b>had atas</b>, bukan jawapan, kerana ${X} dan ${Y} mesti integer.`),
+    say(`Bundar bucu: (${rx}, ${ry}).<br>${gsub(P.cons[0],rx,ry)} <span class="${okC(P.cons[0],rx,ry)?'ok':'no'}">${okC(P.cons[0],rx,ry)?'✓':'✗'}</span><br>Titik ini <b>di luar rantau</b>. Membundar tidak selamat.`),
+    ask('Titik hijau ialah titik integer yang sah. Gelongsor k dan klik titik untuk menyemak.'),
+    say(`Calon terbaik:<br>${LI.slice(0,4).map((p,i)=>`<span class="${i===0?'ok':''}">(${p.x}, ${p.y}) → <i>P</i> = ${p.v}</span>`).join('<br>')}<br><b>Jawapan: (${LI[0].x}, ${LI[0].y}), <i>P</i> = ${LI[0].v}</b>, bukan ${fnum(best.v)}.`)];
+  let sel=ST.sel;
+  const panel=()=>{
+    let d='';
+    if(showLat&&ST.sel){
+      const p=ST.sel;d=`<div class="say small"><b>(${p.x}, ${p.y})</b><br>${P.cons.filter(c=>!c.implicit).map(c=>`${c.html}: ${gsub(c,p.x,p.y)} <span class="${okC(c,p.x,p.y)?'ok':'no'}">${okC(c,p.x,p.y)?'✓':'✗'}</span>`).join('<br>')}<br>${P.cons.every(c=>okC(c,p.x,p.y))?`Sah. <i>P</i> = ${objVal(P,p.x,p.y)}`:'<span class="no">Di luar rantau</span>'}</div>`;
+    }
+    const sl=showLat?`<div class="row"><b>k</b><input id="ks" type="range" min="0" max="14" step="1" value="${ST.k}"><b id="kv" style="min-width:30px">${ST.k}</b></div><div id="kst" class="small"></div>`:'';
+    return `${stag(t+1,5,['Rantau dan bucu','Optimum selanjar','Mengapa tidak membundar','Titik integer dalam rantau','Optimum integer'][t])}${story}${info[t]}${sl}${d}`;
+  };
+  let redraw;
+  const stateFn=()=>{
+    const pts=[];
+    if(t===2)pts.push({x:rx,y:ry,fill:'#fff',stroke:BAD,r:10,label:`(${rx}, ${ry}) ✗`,lc:BAD,dx:14,dy:-4});
+    return {lines:[1,1],feas:true,verts:t>=0&&t<=2,vlabels:true,optV:t>=1&&t<=2?best.i:null,lattice:showLat,
+      k:showLat?ST.k:null,objLabel:showLat,pts,sel:ST.sel?{t:'p',x:ST.sel.x,y:ST.sel.y}:null,
+      onSel:s=>{const [a,b]=s.split(':')[1].split(',').map(Number);ST.sel={x:a,y:b};render();}};
+  };
+  const upd=()=>{
+    const el=$('#kst');if(!el)return;
+    const onLine=L.filter(p=>p.ok&&Math.abs(pval(P,p.x,p.y)-ST.k)<EPS);
+    const s=objStatus(P,ST.k);
+    el.innerHTML=`<span class="${onLine.length?'ok':'no'}">${onLine.length?`Garis melalui titik integer sah: ${onLine.map(p=>`(${p.x}, ${p.y})`).join(', ')}`:(s.cls==='ok'?'Garis masuk rantau tetapi tiada titik integer sah di atasnya.':'Garis di luar rantau.')}</span>`;
+  };
+  const render=()=>{
+    redraw=graphFrame(P,panel(),stateFn,{w:880,h:600});
+    const ks=$('#ks');
+    if(ks){ks.addEventListener('input',e=>{ST.k=+e.target.value;$('#kv').textContent=ST.k;upd();redraw();});upd();}
+  };
+  render();
+}});
+
+slides.push({title:'Tambahan: kes khas yang boleh muncul',steps:3,draw(t){
+  const C=[{P:PA,h:'Tiada rantau',d:'Kekangan bercanggah. Tiada pilihan sah. Semak sama ada soalan dibaca dengan betul.',st:{lines:[1,1],feas:true,note:'Tiada rantau'}},
+    {P:PB,h:'Rantau tak terbatas',d:'Minimum wujud di bucu, tetapi maksimum tiada kerana rantau terus meluas.',st:{lines:[1,1],feas:true,verts:true,vlabels:false,pts:[{x:3,y:0,fill:GOLD,stroke:INK,r:12,label:'minimum (3, 0)',dx:-8,dy:-18,anchor:'end'}]}},
+    {P:PC,h:'Banyak titik optimum',d:'Garis objektif selari dengan satu sempadan. Semua titik pada sisi itu memberi nilai maksimum yang sama.',st:{lines:[1,1,1],feas:true,k:10,seg:[[2,3],[4,1]],objLabel:false}}];
+  plainFrame(`<div class="grid3" style="padding-top:6px">${C.map((c,i)=>`<div class="mini ${i>t?'off':''}"><div id="c${i}"></div><b>${c.h}</b><div style="font-size:18px;margin-top:4px">${c.d}</div></div>`).join('')}</div>`);
+  C.forEach((c,i)=>{if(i>t)return;const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');$('#c'+i).appendChild(svg);drawGraph(svg,c.P,Object.assign({uid:'c'+i,mode},c.st),{w:410,h:390});});
+}});
+
+/* ---- 11. Ringkasan ---- */
+slides.push({title:'Ringkasan dan latihan',steps:1,draw(){
+  plainFrame(`<div style="padding:10px 34px;font-size:23px;line-height:1.5"><h3 style="font-size:28px">Ingat</h3>
+  <ol><li>Takrif ${X} dan ${Y} dahulu, kemudian bina ketaksamaan.</li><li>Kira pintasan, pilih skala, lukis garis, uji titik, lorek.</li><li>Optimum di bucu bagi kes selanjar. Sahkan bucu dengan persamaan serentak.</li><li>Jika integer, semak titik integer dalam rantau. Jangan bundar bucu.</li><li>k hanya untuk arah garis: pekali menjadi pintasan.</li></ol>
+  <div class="ask"><b>Tiket keluar</b>1. Tulis "tidak kurang daripada 5" sebagai ketaksamaan. 2. Garis ${X} + ${Y} &lt; 6 padu atau putus-putus? 3. Bucu (2.4, 3.6) dan ${X}, ${Y} mesti integer: apa yang dilakukan?</div></div>`);
+}});
+
+/* ================= NAVIGASI ================= */
+function render(){
+  const s=slides[si];
+  $('#ttl').textContent=s.title;
+  $('#num').textContent=(si+1)+' / '+slides.length;
+  $('#prog').style.width=((si+(ti+1)/s.steps)/slides.length*100)+'%';
+  $('#stp').textContent=s.steps>1?'Langkah '+(ti+1)+'/'+s.steps:'';
+  $('#bprev').disabled=si===0&&ti===0;
+  $('#bnext').disabled=si===slides.length-1&&ti===s.steps-1;
+  $('#bmode').textContent='Lorek: '+(mode==='unwanted'?'rantau tidak dikehendaki':'rantau dikehendaki');
+  s.draw(ti);
+  try{history.replaceState(null,'','#s='+si+'&t='+ti);}catch(e){}
+}
+function go(a,b){
+  if(a!==si)ST={};
+  si=Math.max(0,Math.min(slides.length-1,a));
+  ti=Math.max(0,Math.min(slides[si].steps-1,b));
+  render();
+}
+function next(){const s=slides[si];if(ti<s.steps-1)go(si,ti+1);else if(si<slides.length-1)go(si+1,0);}
+function prev(){if(ti>0)go(si,ti-1);else if(si>0)go(si-1,slides[si-1].steps-1);}
+function fit(){const s=Math.min(innerWidth/1280,innerHeight/720);$('#stage').style.transform=`translate(-50%,-50%) scale(${s})`;}
+addEventListener('resize',fit);fit();
+$('#bnext').onclick=e=>{e.target.blur();next();};
+$('#bprev').onclick=e=>{e.target.blur();prev();};
+$('#bmode').onclick=e=>{e.target.blur();mode=mode==='unwanted'?'required':'unwanted';render();};
+$('#bfs').onclick=e=>{e.target.blur();if(document.fullscreenElement)document.exitFullscreen();else document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen();};
+function buildMenuList(){
+  let html='',inGroup=false;
+  slides.forEach((s,i)=>{
+    if(s.isDivider){
+      if(inGroup)html+='</div>';
+      html+=`<div class="menu-group"><h4>${s.title}</h4>`;
+      inGroup=true;
+    }else{
+      html+=`<div class="menu-item ${i===si?'cur':''}" data-i="${i}"><span class="mi-n">${i+1}</span>${s.title}</div>`;
+    }
+  });
+  if(inGroup)html+='</div>';
+  $('#menuList').innerHTML=html;
+  $('#menuList').querySelectorAll('.menu-item').forEach(el=>el.addEventListener('click',()=>{closeMenu();go(+el.dataset.i,0);}));
+}
+function openMenu(){buildMenuList();$('#menuWrap').classList.add('open');}
+function closeMenu(){$('#menuWrap').classList.remove('open');}
+function menuOpen(){return $('#menuWrap').classList.contains('open');}
+$('#bmenu').onclick=e=>{e.target.blur();openMenu();};
+$('#menuClose').onclick=closeMenu;
+$('#menuWrap').addEventListener('click',e=>{if(e.target.id==='menuWrap')closeMenu();});
+addEventListener('keydown',e=>{
+  const tag=document.activeElement&&document.activeElement.tagName,inField=tag==='INPUT'||tag==='SELECT'||tag==='TEXTAREA';
+  const k=e.key;
+  if(menuOpen()){if(k==='Escape'){closeMenu();}return;}
+  if(k==='PageDown'||((k===' '||k==='Enter')&&!inField)||((k==='ArrowRight'||k==='ArrowDown')&&!inField)){e.preventDefault();if(document.activeElement&&document.activeElement.tagName==='BUTTON')document.activeElement.blur();next();}
+  else if(k==='PageUp'||((k==='Backspace'||k==='ArrowLeft'||k==='ArrowUp')&&!inField)){e.preventDefault();prev();}
+  else if(k==='Home'&&!inField){go(0,0);}
+  else if(k==='End'&&!inField){go(slides.length-1,slides[slides.length-1].steps-1);}
+  else if((k==='f'||k==='F')&&!inField){$('#bfs').click();}
+  else if((k==='m'||k==='M')&&!inField){openMenu();}
+});
+let tx=null;
+$('#stage').addEventListener('touchstart',e=>{tx=e.target.closest('input')?null:e.touches[0].clientX;},{passive:true});
+$('#stage').addEventListener('touchend',e=>{if(tx==null)return;const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>70){d<0?next():prev();}tx=null;},{passive:true});
+const m=/s=(\d+)&t=(\d+)/.exec(location.hash||'');
+go(m?+m[1]:0,m?+m[2]:0);
+window.__lp={go,slides,vertices,lattice,P1,P2,openMenu,closeMenu};
+})();
+</script>
+</body>
+</html>
